@@ -19,7 +19,7 @@ export const CreatePost: React.FC = () => {
             (!fetching && !data?.me) ? (
                 <Layout variant="small">
                 <Box>You need to login before you create a post</Box>
-                <NextLink href="./login">login</NextLink>
+                <NextLink href="./login?next=create-post">login</NextLink>
                 </Layout>      
             ) :
             <Layout variant="small">

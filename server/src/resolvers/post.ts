@@ -2,6 +2,7 @@ import { Post } from "../entities/Posts";
 import { MyContext } from "../types";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { isAuth } from "../middleware/isAuth";
+import { getConnection } from "typeorm";
 
 
 @InputType()
@@ -16,8 +17,18 @@ class postInput {
 @Resolver()
 export class postResolver {
   @Query(() => [Post])
-  posts(@Ctx() { em }: MyContext): Promise<Post[]> {
-    return em.find(Post);
+  posts(
+    @Arg("limit") limit:number,
+    @Arg("cursor", ()=>String, {nullable:true}) cursor:string | null,
+  ): Promise<Post[]> {
+    const reallimit = Math.min(50, limit)
+    const qb =  getConnection()
+    .getRepository(Post)
+    .createQueryBuilder("post")
+    .orderBy('"createdAt"')
+    .limit(reallimit)
+    if (cursor) qb.where('"createdAt" < :cursor', {cursor: new Date(parseInt(cursor))})
+    return qb.getMany();
   }
   @Query(() => Post, { nullable: true })
   post(

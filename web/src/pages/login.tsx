@@ -22,7 +22,8 @@ const Login: React.FC = ({}) => {
           if (response.data?.login.errors) {
             setErrors(errorMaps(response.data.login.errors));
           } else if (response.data?.login.user) {
-            router.replace("./");
+            if (typeof router.query.next === "string") router.replace(router.query.next);
+            else router.replace("./")
           }
         }}
       >
