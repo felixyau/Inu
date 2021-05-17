@@ -1,5 +1,6 @@
 /*
-email authentication, now user can register with invalid email, but we can't send email to email with invalid format
+1. email authentication, now user can register with invalid email, but we can't send email to email with invalid format
+2. each post only shows 50 letters
 */
 import "reflect-metadata";
 import { createConnection } from "typeorm";
@@ -13,7 +14,7 @@ import { helloResolver } from "./resolvers/hello";
 import { postResolver } from "./resolvers/post";
 import { User } from "./entities/User";
 import { userResolver } from "./resolvers/user";
-//import path from "path"
+import path from "path"
 
 import Redis from "ioredis";
 import session from "express-session";
@@ -39,10 +40,10 @@ const main = async () => {
     port: 5432,
     username: "postgres",
     //synchronize: true,
-    //migrations: [path.join(__dirname, "./migrations/*")],
+    migrations: [path.join(__dirname, "./migrations/*")],
     entities: [Post, User],
   });
-  //queryRunner.executeMemoryUpSql()
+  //await Post.delete({});
   const app = express();
   app.use(
     cors({

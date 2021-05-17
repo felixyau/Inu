@@ -27,12 +27,12 @@ __decorate([
 ], Post.prototype, "title", void 0);
 __decorate([
     type_graphql_1.Field(),
-    typeorm_1.Column({ default: 0, type: "int" }),
+    typeorm_1.Column(),
     __metadata("design:type", String)
 ], Post.prototype, "text", void 0);
 __decorate([
     type_graphql_1.Field(),
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: 0, type: "int" }),
     __metadata("design:type", Number)
 ], Post.prototype, "points", void 0);
 __decorate([

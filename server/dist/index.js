@@ -24,6 +24,7 @@ const hello_1 = require("./resolvers/hello");
 const post_1 = require("./resolvers/post");
 const User_1 = require("./entities/User");
 const user_1 = require("./resolvers/user");
+const path_1 = __importDefault(require("path"));
 const ioredis_1 = __importDefault(require("ioredis"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
@@ -37,6 +38,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         host: "localhost",
         port: 5432,
         username: "postgres",
+        migrations: [path_1.default.join(__dirname, "./migrations/*")],
         entities: [Posts_1.Post, User_1.User],
     });
     const app = express_1.default();

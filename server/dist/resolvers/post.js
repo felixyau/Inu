@@ -40,16 +40,24 @@ postInput = __decorate([
     type_graphql_1.InputType()
 ], postInput);
 let postResolver = class postResolver {
+    TextSnippet(root) {
+        return root.text.slice(0, 50);
+    }
     posts(limit, cursor) {
-        const reallimit = Math.min(50, limit);
-        const qb = typeorm_1.getConnection()
-            .getRepository(Posts_1.Post)
-            .createQueryBuilder("post")
-            .orderBy('"createdAt"')
-            .limit(reallimit);
-        if (cursor)
-            qb.where('"createdAt" < :cursor', { cursor: new Date(parseInt(cursor)) });
-        return qb.getMany();
+        return __awaiter(this, void 0, void 0, function* () {
+            const reallimit = Math.min(50, limit);
+            const qb = typeorm_1.getConnection()
+                .getRepository(Posts_1.Post)
+                .createQueryBuilder("p")
+                .orderBy('p."createdAt"')
+                .limit(reallimit);
+            console.log("cursor:", cursor);
+            if (cursor) {
+                console.log("int:", parseInt(cursor));
+                qb.where('p."createdAt" > :cursor', { cursor: new Date(parseInt(cursor)) });
+            }
+            return qb.getMany();
+        });
     }
     post(id) {
         return Posts_1.Post.findOne(id);
@@ -79,8 +87,15 @@ let postResolver = class postResolver {
     }
 };
 __decorate([
+    type_graphql_1.FieldResolver(() => String),
+    __param(0, type_graphql_1.Root()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Posts_1.Post]),
+    __metadata("design:returntype", void 0)
+], postResolver.prototype, "TextSnippet", null);
+__decorate([
     type_graphql_1.Query(() => [Posts_1.Post]),
-    __param(0, type_graphql_1.Arg("limit")),
+    __param(0, type_graphql_1.Arg("limit", () => type_graphql_1.Int)),
     __param(1, type_graphql_1.Arg("cursor", () => String, { nullable: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
@@ -118,7 +133,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], postResolver.prototype, "deletePost", null);
 postResolver = __decorate([
-    type_graphql_1.Resolver()
+    type_graphql_1.Resolver(of => Posts_1.Post)
 ], postResolver);
 exports.postResolver = postResolver;
 //# sourceMappingURL=post.js.map

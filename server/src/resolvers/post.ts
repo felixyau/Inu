@@ -1,6 +1,6 @@
 import { Post } from "../entities/Posts";
 import { MyContext } from "../types";
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Ctx, Field, FieldResolver, InputType, Int, Mutation, Query, Resolver, Root, UseMiddleware } from "type-graphql";
 import { isAuth } from "../middleware/isAuth";
 import { getConnection } from "typeorm";
 
@@ -14,22 +14,33 @@ class postInput {
   text!:string
 }
 
-@Resolver()
+@Resolver(of=>Post)
 export class postResolver {
+  @FieldResolver(()=>String)
+  TextSnippet(@Root() root:Post) {
+    return root.text.slice(0,50);
+  }
+
   @Query(() => [Post])
-  posts(
-    @Arg("limit") limit:number,
+  async posts(
+    @Arg("limit", ()=>Int) limit:number,
     @Arg("cursor", ()=>String, {nullable:true}) cursor:string | null,
   ): Promise<Post[]> {
     const reallimit = Math.min(50, limit)
     const qb =  getConnection()
     .getRepository(Post)
-    .createQueryBuilder("post")
-    .orderBy('"createdAt"')
+    .createQueryBuilder("p")
+    .orderBy('p."createdAt"')
     .limit(reallimit)
-    if (cursor) qb.where('"createdAt" < :cursor', {cursor: new Date(parseInt(cursor))})
+    console.log("cursor:", cursor)
+    
+    if (cursor) {
+      console.log("int:", parseInt(cursor))
+      qb.where('p."createdAt" > :cursor', { cursor: new Date(parseInt(cursor)) })
+    }
     return qb.getMany();
   }
+
   @Query(() => Post, { nullable: true })
   post(
     @Arg("id") id: number

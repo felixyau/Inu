@@ -1,17 +1,50 @@
+import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
-import React from "react";
+import React, { useState } from "react";
 import { Navbar } from "../components/Navbar";
-import { usePostsQuery } from "../generated/graphql";
+import { PostsDocument, usePostsQuery } from "../generated/graphql";
 import { createUrqClient } from "../utilities/CreateUqrlClient";
 
 const Index = () => {
-  const [{data}] = usePostsQuery();
+  const [variables, setVariables] = useState({ limit: 2, cursor: "" }); //limit = 1 doesn't work
+  const [{ data, fetching }] = usePostsQuery({ variables });
   return (
-  <>
-    <Navbar />
-    {!data ? <div>Loading...</div> : data.posts.map((post)=><div key={post.id}>{post.title}</div>)}
-    <div>hello</div>
-  </>)
+    <>
+      <Navbar />
+      {!data && fetching ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <Stack spacing={8}>
+            {data!.posts.map((post) => (
+              <Box
+                key={post.id}
+                p={5}
+                shadow="md"
+                borderWidth="1px"
+                borderRadius="md"
+              >
+                <Heading fontSize="xl">{post.title}</Heading>
+                <Text>{post.TextSnippet}</Text>
+              </Box>
+            ))}
+          </Stack>
+          <Button
+            onClick={() => {
+              console.log("worked");
+              console.log("data", data!.posts);
+              setVariables({
+                limit: 2,
+                cursor: data!.posts[data!.posts.length - 1].createdAt,
+              });
+            }}
+          >
+            Load more
+          </Button>
+        </>
+      )}
+    </>
+  );
 };
 
-export default withUrqlClient(createUrqClient, {ssr:true})(Index);
+export default withUrqlClient(createUrqClient, { ssr: true })(Index);
