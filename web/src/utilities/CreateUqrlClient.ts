@@ -6,6 +6,7 @@ import {
   LoginMutation,
   MeDocument,
   MeQuery,
+  PaginatedPost,
   RegisterMutation,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
@@ -23,14 +24,19 @@ export const cursorPagination = () : Resolver => {
       return undefined;
     }
     const ifinCache = cache.resolve(entityKey,`${fieldName}(${fieldArgs})`);
+    
     info.partial = !ifinCache;
     const result:string[] = [];
     fieldInfos.forEach(fi=> {
-      const data = cache.resolve(entityKey, fi.fieldKey) as string[]
+      let data = cache.resolve(entityKey, fi.fieldKey) 
+      data = cache.resolve(data, "posts");
       result.push(...data);
     })
 
-    return result;
+    return {
+      post:result,
+      hasMore:true
+    };
 
     // const visited = new Set();
     // let result: NullArray<string> = [];

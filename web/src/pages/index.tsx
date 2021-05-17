@@ -8,6 +8,7 @@ import { createUrqClient } from "../utilities/CreateUqrlClient";
 const Index = () => {
   const [variables, setVariables] = useState({ limit: 2, cursor: "" }); //limit = 1 doesn't work
   const [{ data, fetching }] = usePostsQuery({ variables });
+  console.log("data:", data)
   return (
     <>
       <Navbar />
@@ -16,7 +17,7 @@ const Index = () => {
       ) : (
         <>
           <Stack spacing={8}>
-            {data!.posts.map((post) => (
+            {data!.posts.posts.map((post) => (
               <Box
                 key={post.id}
                 p={5}
@@ -29,13 +30,13 @@ const Index = () => {
               </Box>
             ))}
           </Stack>
-          <Button
+          <Button hidden={!data?.posts.hasMore}
             onClick={() => {
               console.log("worked");
               console.log("data", data!.posts);
               setVariables({
                 limit: 2,
-                cursor: data!.posts[data!.posts.length - 1].createdAt,
+                cursor: data!.posts.posts[data!.posts.posts.length - 1].createdAt,
               });
             }}
           >

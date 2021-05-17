@@ -1,6 +1,7 @@
 /*
 1. email authentication, now user can register with invalid email, but we can't send email to email with invalid format
 2. each post only shows 50 letters
+3. post limit=1 don't work ,posts mutation bug 
 */
 import "reflect-metadata";
 import { createConnection } from "typeorm";

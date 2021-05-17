@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postResolver = void 0;
+exports.postResolver = exports.PaginatedPost = void 0;
 const Posts_1 = require("../entities/Posts");
 const type_graphql_1 = require("type-graphql");
 const isAuth_1 = require("../middleware/isAuth");
@@ -39,6 +39,20 @@ __decorate([
 postInput = __decorate([
     type_graphql_1.InputType()
 ], postInput);
+let PaginatedPost = class PaginatedPost {
+};
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", Boolean)
+], PaginatedPost.prototype, "hasMore", void 0);
+__decorate([
+    type_graphql_1.Field(() => [Posts_1.Post]),
+    __metadata("design:type", Array)
+], PaginatedPost.prototype, "posts", void 0);
+PaginatedPost = __decorate([
+    type_graphql_1.ObjectType()
+], PaginatedPost);
+exports.PaginatedPost = PaginatedPost;
 let postResolver = class postResolver {
     TextSnippet(root) {
         return root.text.slice(0, 50);
@@ -46,17 +60,21 @@ let postResolver = class postResolver {
     posts(limit, cursor) {
         return __awaiter(this, void 0, void 0, function* () {
             const reallimit = Math.min(50, limit);
+            const reallimitPlusOne = reallimit + 1;
             const qb = typeorm_1.getConnection()
                 .getRepository(Posts_1.Post)
                 .createQueryBuilder("p")
                 .orderBy('p."createdAt"')
-                .limit(reallimit);
-            console.log("cursor:", cursor);
+                .take(reallimitPlusOne);
             if (cursor) {
                 console.log("int:", parseInt(cursor));
                 qb.where('p."createdAt" > :cursor', { cursor: new Date(parseInt(cursor)) });
             }
-            return qb.getMany();
+            const posts = yield qb.getMany();
+            return {
+                hasMore: posts.length === reallimitPlusOne,
+                posts: posts.slice(0, reallimit)
+            };
         });
     }
     post(id) {
@@ -94,7 +112,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], postResolver.prototype, "TextSnippet", null);
 __decorate([
-    type_graphql_1.Query(() => [Posts_1.Post]),
+    type_graphql_1.Query(() => PaginatedPost),
     __param(0, type_graphql_1.Arg("limit", () => type_graphql_1.Int)),
     __param(1, type_graphql_1.Arg("cursor", () => String, { nullable: true })),
     __metadata("design:type", Function),
