@@ -13,17 +13,20 @@ import {
 import { createUrqClient } from "../utilities/CreateUqrlClient";
 import { errorMaps } from "../utilities/errorMap";
 import NextLink from "next/link";
+import { withApollo } from "../utilities/withApollo";
 
 const ForgotPassword: React.FC = ({}) => {
-  const [, forgotPassword] = useForgotPasswordMutation();
+  const [forgotPassword] = useForgotPasswordMutation();
   const router = useRouter();
   const [complete, setComplete] = useState(false);
   return (
     <Wrapper variant="small">
       <Formik
-        initialValues={{ email:"" }}
+        initialValues={{ email: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await forgotPassword({email: values.email});
+          const response = await forgotPassword({
+            variables: { email: values.email },
+          });
           if (response.data?.forgotPassword) {
             setComplete(true);
           }
@@ -33,18 +36,14 @@ const ForgotPassword: React.FC = ({}) => {
           complete ? (
             <>
               <Box>We have sent a email to that address</Box>
-              <NextLink href="/">
-                <Link style={{color:"#0088cc"}}>Go back</Link>
+              <NextLink href="/login">
+                <Link style={{ color: "#0088cc" }}>Login here</Link>
               </NextLink>
             </>
           ) : (
             <Form>
               <Box mt={4}>
-                <InputField
-                  name="email"
-                  placeholder="email"
-                  label="Email"
-                />
+                <InputField name="email" placeholder="email" label="Email" />
               </Box>
               <Box>
                 <NextLink href="/login">
@@ -57,7 +56,7 @@ const ForgotPassword: React.FC = ({}) => {
                 isLoading={isSubmitting}
                 colorScheme="telegram"
               >
-                Login
+                Reset
               </Button>
             </Form>
           )
@@ -67,4 +66,4 @@ const ForgotPassword: React.FC = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqClient)(ForgotPassword);
+export default withApollo({ssr : false})(ForgotPassword);

@@ -10,7 +10,13 @@ const breakpoints = createBreakpoints({
   xl: '80em',
 })
 
+
+
 const theme = extendTheme({
+  config : {
+    initialColorMode: "light",
+    useSystemColorMode: false,
+  },
   components: {
     Link: {
       baseStyle: {

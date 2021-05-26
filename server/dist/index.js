@@ -29,6 +29,10 @@ const ioredis_1 = __importDefault(require("ioredis"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const cors_1 = __importDefault(require("cors"));
+const Updoot_1 = require("./entities/Updoot");
+const createUserLoader_1 = require("./utilities/createUserLoader");
+const createUpdootLoader_1 = require("./utilities/createUpdootLoader");
+const Comments_1 = require("./entities/Comments");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield typeorm_1.createConnection({
         type: "postgres",
@@ -39,7 +43,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         port: 5432,
         username: "postgres",
         migrations: [path_1.default.join(__dirname, "./migrations/*")],
-        entities: [Posts_1.Post, User_1.User],
+        entities: [Posts_1.Post, User_1.User, Updoot_1.Updoot, Comments_1.Comments],
     });
     const app = express_1.default();
     app.use(cors_1.default({
@@ -71,7 +75,14 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.helloResolver, post_1.postResolver, user_1.userResolver],
             validate: false,
         }),
-        context: ({ req, res }) => ({ em: connection.manager, req, res, redis }),
+        context: ({ req, res }) => ({
+            em: connection.manager,
+            req,
+            res,
+            redis,
+            userLoader: createUserLoader_1.CreateUserLoader(),
+            updootLoader: createUpdootLoader_1.CreateUpdootLoader(),
+        }),
     });
     apolloServer.applyMiddleware({ app, cors: false });
     app.get("/", (_, res) => {

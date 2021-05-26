@@ -48,6 +48,12 @@ UserResponse = __decorate([
     type_graphql_1.ObjectType()
 ], UserResponse);
 let userResolver = class userResolver {
+    email({ req }, user) {
+        if (user.id === req.session.userId) {
+            return user.email;
+        }
+        return "";
+    }
     users() {
         return User_1.User.find();
     }
@@ -67,7 +73,7 @@ let userResolver = class userResolver {
                             field: "newPassword",
                             msg: "password must be longer than 6 characters",
                         },
-                    ]
+                    ],
                 };
             }
             const key = constant_1.FORGET_PASSWORD_PREFIX + token;
@@ -79,7 +85,7 @@ let userResolver = class userResolver {
                             field: "token",
                             msg: "token expired",
                         },
-                    ]
+                    ],
                 };
             const userIdNum = parseInt(userId);
             const user = yield User_1.User.findOne(userIdNum);
@@ -88,9 +94,9 @@ let userResolver = class userResolver {
                     errors: [
                         {
                             field: "token",
-                            msg: "user doesn't exist"
-                        }
-                    ]
+                            msg: "user doesn't exist",
+                        },
+                    ],
                 };
             }
             yield User_1.User.update({ id: userIdNum }, { password: yield argon2_1.default.hash(newPassword) });
@@ -122,8 +128,19 @@ let userResolver = class userResolver {
                 yield em.save(user);
             }
             catch (err) {
+                console.log();
                 if (err.code === "23505") {
-                    console.log("hello");
+                    console.log(err.detail);
+                    if (err.detail.includes("email")) {
+                        return {
+                            errors: [
+                                {
+                                    field: "email",
+                                    msg: "email already exists",
+                                },
+                            ],
+                        };
+                    }
                     return {
                         errors: [
                             {
@@ -150,7 +167,9 @@ let userResolver = class userResolver {
     }
     login(usernameOrEmail, password, { em, req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield em.findOne(User_1.User, usernameOrEmail.includes("@") ? { email: usernameOrEmail } : { username: usernameOrEmail });
+            const user = yield em.findOne(User_1.User, usernameOrEmail.includes("@")
+                ? { email: usernameOrEmail }
+                : { username: usernameOrEmail });
             if (!user) {
                 return {
                     errors: [
@@ -187,6 +206,13 @@ let userResolver = class userResolver {
         }));
     }
 };
+__decorate([
+    type_graphql_1.FieldResolver(() => String),
+    __param(0, type_graphql_1.Ctx()), __param(1, type_graphql_1.Root()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, User_1.User]),
+    __metadata("design:returntype", void 0)
+], userResolver.prototype, "email", null);
 __decorate([
     type_graphql_1.Query(() => [User_1.User]),
     __metadata("design:type", Function),
@@ -242,7 +268,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], userResolver.prototype, "logout", null);
 userResolver = __decorate([
-    type_graphql_1.Resolver()
+    type_graphql_1.Resolver((of) => User_1.User)
 ], userResolver);
 exports.userResolver = userResolver;
 //# sourceMappingURL=user.js.map

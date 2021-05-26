@@ -2,6 +2,10 @@
 1. email authentication, now user can register with invalid email, but we can't send email to email with invalid format
 2. each post only shows 50 letters
 3. post limit=1 don't work ,posts mutation bug 
+4. study sql espectially post mutation
+5. how exactly cookie work, maintain login even when delete cookies
+5. I can see password from network request now, is it the case in production only?
+6. How server side rendering work, how next do it, how is server work? urql request 
 */
 import "reflect-metadata";
 import { createConnection } from "typeorm";
@@ -15,7 +19,7 @@ import { helloResolver } from "./resolvers/hello";
 import { postResolver } from "./resolvers/post";
 import { User } from "./entities/User";
 import { userResolver } from "./resolvers/user";
-import path from "path"
+import path from "path";
 
 import Redis from "ioredis";
 import session from "express-session";
@@ -23,6 +27,10 @@ import connectRedis from "connect-redis";
 
 import cors from "cors";
 import { sendEmails } from "./utilities/sendEmails";
+import { Updoot } from "./entities/Updoot";
+import { CreateUserLoader } from "./utilities/createUserLoader";
+import { CreateUpdootLoader } from "./utilities/createUpdootLoader";
+import { Comments } from "./entities/Comments";
 
 declare module "express-session" {
   export interface SessionData {
@@ -42,7 +50,7 @@ const main = async () => {
     username: "postgres",
     //synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [Post, User],
+    entities: [Post, User, Updoot, Comments],
   });
   //await Post.delete({});
   const app = express();
@@ -81,10 +89,17 @@ const main = async () => {
       resolvers: [helloResolver, postResolver, userResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: connection.manager, req, res, redis }),
+    context: ({ req, res }) => ({
+      em: connection.manager,
+      req,
+      res,
+      redis,
+      userLoader: CreateUserLoader(),
+      updootLoader: CreateUpdootLoader(),
+    }),
   });
 
-  apolloServer.applyMiddleware({ app, cors:false });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   app.get("/", (_, res) => {
     res.send("hi");

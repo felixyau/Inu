@@ -1,42 +1,77 @@
-import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
-import { withUrqlClient } from "next-urql";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Link,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import NextLink from "next/link";
 import React, { useState } from "react";
 import { Navbar } from "../components/Navbar";
-import { PostsDocument, usePostsQuery } from "../generated/graphql";
-import { createUrqClient } from "../utilities/CreateUqrlClient";
+import { PostAction } from "../components/postAction";
+import { PostContent } from "../components/postContent";
+import { UpdootSession } from "../components/UpdootSession";
+import {
+
+  PostQuery,
+  usePostsQuery,
+} from "../generated/graphql";
+import { withApollo } from "../utilities/withApollo";
 
 const Index = () => {
-  const [variables, setVariables] = useState({ limit: 2, cursor: "" }); //limit = 1 doesn't work
-  const [{ data, fetching }] = usePostsQuery({ variables });
-  console.log("data:", data)
+  const { data, error, loading, fetchMore, variables, updateQuery } = usePostsQuery({
+    variables: {
+      limit: 2,
+      cursor: "",
+    },
+    notifyOnNetworkStatusChange : true,
+  });
+  
+
+  console.log("data:",data);
+  if (!loading && !data) {
+    return (
+      <div>
+        <div>you got query failed for some reason</div>
+        <div>{error?.message}</div>
+      </div>
+    );
+  }
   return (
     <>
       <Navbar />
-      {!data && fetching ? (
+      {!data && loading ? (
         <div>Loading...</div>
       ) : (
         <>
-          <Stack spacing={8}>
+          <Stack spacing={5} m={"auto"} mt={5} padding={0} width="450pt">
             {data!.posts.posts.map((post) => (
-              <Box
+              <Flex
                 key={post.id}
                 p={5}
                 shadow="md"
                 borderWidth="1px"
                 borderRadius="md"
               >
-                <Heading fontSize="xl">{post.title}</Heading>
-                <Text>{post.TextSnippet}</Text>
-              </Box>
+                <UpdootSession post={post} />
+                <PostContent creator={post.creator} post={post} />
+                <PostAction creator={post.creator} post={post} />
+              </Flex>
             ))}
           </Stack>
-          <Button hidden={!data?.posts.hasMore}
+          <Button
+          isLoading = {loading}
+            hidden={!data?.posts.hasMore}
             onClick={() => {
-              console.log("worked");
-              console.log("data", data!.posts);
-              setVariables({
-                limit: 2,
-                cursor: data!.posts.posts[data!.posts.posts.length - 1].createdAt,
+              fetchMore({variables:{
+                limit: variables?.limit,
+                cursor:
+                  data!.posts.posts[data!.posts.posts.length - 1].createdAt,
+              }
               });
             }}
           >
@@ -48,4 +83,4 @@ const Index = () => {
   );
 };
 
-export default withUrqlClient(createUrqClient, { ssr: true })(Index);
+export default withApollo({ ssr : true })(Index);

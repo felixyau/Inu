@@ -18,11 +18,12 @@ import { Wrapper } from "../../components/Wrapper";
 import { useChangePasswordMutation } from "../../generated/graphql";
 import { createUrqClient } from "../../utilities/CreateUqrlClient";
 import { errorMaps } from "../../utilities/errorMap";
-import NextLink from "next/link"
+import NextLink from "next/link";
+import { withApollo } from "../../utilities/withApollo";
 
 export const ChangePassword: NextPage = () => {
   const router = useRouter();
-  const [, changePassword] = useChangePasswordMutation();
+  const [changePassword] = useChangePasswordMutation();
   const [tokenError, setTokenError] = useState("");
   return (
     <Wrapper variant="small">
@@ -30,9 +31,13 @@ export const ChangePassword: NextPage = () => {
         initialValues={{ newPassword: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await changePassword({
-            newPassword: values.newPassword,
-            token:
-              typeof router.query.token === "string" ? router.query.token : "",
+            variables: {
+              newPassword: values.newPassword,
+              token:
+                typeof router.query.token === "string"
+                  ? router.query.token
+                  : "",
+            },
           });
           if (response.data?.changePassword.errors) {
             let errorMap = errorMaps(response.data.changePassword.errors);
@@ -40,7 +45,7 @@ export const ChangePassword: NextPage = () => {
               setTokenError(errorMap.token);
             }
             setErrors(errorMap);
-          } 
+          }
         }}
       >
         {({ isSubmitting }) => (
@@ -58,7 +63,7 @@ export const ChangePassword: NextPage = () => {
                 <AlertIcon />
                 <AlertTitle mr={2}>{tokenError}</AlertTitle>
                 <NextLink href="/forgot-password">
-                    <Link>Click to get a new one</Link>
+                  <Link>Click to get a new one</Link>
                 </NextLink>
               </Alert>
             ) : null}
@@ -67,7 +72,7 @@ export const ChangePassword: NextPage = () => {
               type="submit"
               isLoading={isSubmitting}
               colorScheme="telegram"
-              onClick={()=>router.push("/login")}
+              onClick={() => router.push("/login")}
             >
               Reset Password
             </Button>
@@ -82,4 +87,4 @@ export const ChangePassword: NextPage = () => {
 //   return { token :query.token as string};
 // };
 
-export default withUrqlClient(createUrqClient)(ChangePassword);
+export default withApollo({ssr : false})(ChangePassword);
