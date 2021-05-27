@@ -31,6 +31,7 @@ import { Updoot } from "./entities/Updoot";
 import { CreateUserLoader } from "./utilities/createUserLoader";
 import { CreateUpdootLoader } from "./utilities/createUpdootLoader";
 import { Comments } from "./entities/Comments";
+import { commentsResolver } from "./resolvers/comments";
 
 declare module "express-session" {
   export interface SessionData {
@@ -86,7 +87,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [helloResolver, postResolver, userResolver],
+      resolvers: [helloResolver, postResolver, userResolver, commentsResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({

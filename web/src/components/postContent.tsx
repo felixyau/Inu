@@ -6,6 +6,7 @@ import {
   Container,
   Flex,
   Grid,
+  Spacer,
 } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
@@ -27,23 +28,21 @@ interface PostContentProps {
 
 export const PostContent: React.FC<PostContentProps> = ({ post, creator }) => {
   return (
-    <Grid
-      h="200px"
-      templateRows="repeat(2, 1fr)"
-      templateColumns="repeat(2, 1fr)"
-      gap={4}
-    >
-      <Box rowSpan={1} colSpan={1}>
+    <Box h="200px" ml={2} pl="40px">
+      <Box>
         <NextLink href="/post/[id]" as={`/post/${post.id}`}>
           <Link>
-            <Heading fontSize="xl">{post.title}</Heading>
+          <Box>
+            <Heading fontSize="xl">
+              {post.title}
+            </Heading>
+            <Text>posted by {creator.username}</Text>
+            </Box>
           </Link>
+          
         </NextLink>
       </Box>
-      <Box colSpan={1} fontSize={13}>
-        posted by {creator.username}
-      </Box>
       <Container isTruncated>{post.text}</Container>
-    </Grid>
+    </Box>
   );
 };

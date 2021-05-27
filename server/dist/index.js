@@ -33,6 +33,7 @@ const Updoot_1 = require("./entities/Updoot");
 const createUserLoader_1 = require("./utilities/createUserLoader");
 const createUpdootLoader_1 = require("./utilities/createUpdootLoader");
 const Comments_1 = require("./entities/Comments");
+const comments_1 = require("./resolvers/comments");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield typeorm_1.createConnection({
         type: "postgres",
@@ -72,7 +73,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
-            resolvers: [hello_1.helloResolver, post_1.postResolver, user_1.userResolver],
+            resolvers: [hello_1.helloResolver, post_1.postResolver, user_1.userResolver, comments_1.commentsResolver],
             validate: false,
         }),
         context: ({ req, res }) => ({

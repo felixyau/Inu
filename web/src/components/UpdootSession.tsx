@@ -32,6 +32,22 @@ const updateAfterVote = (
       }
     `,
   });
+  let realData : {
+    points: number,
+    voteStatus:number | null
+  };
+
+  if (data?.voteStatus === value) {
+    realData = {
+      points: data?.points! + -value,
+      voteStatus: null,
+    };
+  } else {
+    realData = {
+      points: data?.points! + (!!data?.voteStatus ? 2 : 1) * value,
+      voteStatus: value,
+    }
+  }
   cache.writeFragment({
     id: "Post:" + post.id,
     fragment: gql`
@@ -40,17 +56,14 @@ const updateAfterVote = (
         voteStatus
       }
     `,
-    data: {
-      points: data?.points! + (!!data?.voteStatus ? 2 : 1) * value,
-      voteStatus: value,
-    },
+    data: realData,
   });
 };
 
 export const UpdootSession: React.FC<UpdootSessionProps> = ({ post }) => {
   const [vote] = useVoteMutation();
   return (
-    <Flex direction="column" justifyContent="center" alignItems="center" mr={2}>
+    <Flex direction="column" align="center" width="40px" position="absolute">
       <IconButton
         colorScheme={post.voteStatus === 1 ? "telegram" : undefined}
         onClick={() =>

@@ -6,6 +6,8 @@ import {
   Link,
   useColorMode,
   Text,
+  IconButton,
+  Tooltip,
 } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
@@ -15,22 +17,24 @@ import { isServer } from "../utilities/isServer";
 
 import InuIcon from "../components/inuIcon";
 import { useApolloClient } from "@apollo/client";
+import { AddIcon, MoonIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
 
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
-  const { data, loading } = useMeQuery(
-    // skip: isServer(),
-  );
+  const { data, loading } = useMeQuery();
+  // skip: isServer(),
   const [logout] = useLogoutMutation();
   const { colorMode, toggleColorMode } = useColorMode();
   const apolloClient = useApolloClient();
+  const router = useRouter();
 
-  console.log(data)
+  console.log(data);
 
   let body = null;
   if (loading) {
-    body=<div>Loading...</div>
+    body = <div>Loading...</div>;
   } else if (!data?.me) {
     body = (
       <Flex align="center">
@@ -48,9 +52,17 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   } else {
     body = (
       <Flex align="center">
-        <NextLink href="/create-post">
-          <Link mr={2}>Create Post</Link>
-        </NextLink>
+        <Tooltip label="create post" aria-label="create-post">
+          <IconButton
+            bg="-moz-initial"
+            aria-label="create-post"
+            icon={<AddIcon />}
+            mr={2}
+            onClick={() => router.push("/create-post")}
+          >
+            Create Post
+          </IconButton>
+        </Tooltip>
         <Text mr={2} ml={"auto"}>
           HI {data.me.username}
         </Text>
@@ -80,17 +92,26 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
       height={70}
     >
       <NextLink href="/">
-        <Flex>
-          <Link>
-            <InuIcon />
-          </Link>
+        <Flex _hover={{ cursor: "pointer" }} align="center" ml={4}>
+          <InuIcon />
           Shiba
         </Flex>
       </NextLink>
-      <Button onClick={toggleColorMode}>
-        Toggle {colorMode === "light" ? "Dark" : "Light"}
-      </Button>
-      <Box ml={"auto"}>{body}</Box>
+
+      <Flex align="center" ml={"auto"}>
+        <Tooltip label="change color theme" aria-label="change-color-theme">
+          <IconButton
+            aria-label="colormode"
+            icon={<MoonIcon />}
+            onClick={toggleColorMode}
+            mr={2}
+            bg="-moz-initial"
+          >
+            {colorMode === "light" ? "Dark" : "Light"}
+          </IconButton>
+        </Tooltip>
+        {body}
+      </Flex>
     </Flex>
   );
 };

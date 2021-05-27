@@ -27,7 +27,7 @@ export const PostAction: React.FC<postActionProps> = ({ creator, post }) => {
   const { data: meData } = useMeQuery();
   const [deletePost] = useDeletePostMutation();
   return (
-    <Box>
+    <Box  ml={"auto"}>
       <Box hidden={!(meData?.me?.id === creator.id)}>
         <IconButton
           onClick={() =>

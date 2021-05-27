@@ -12,5 +12,9 @@ fragment PostSnippet on Post {
   }
   comments {
     text
+    commentor {
+      username
+      userId
+    }
   }
 }

@@ -24,6 +24,7 @@ export type Comments = {
   post: Post;
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
+  commentor?: Maybe<UsernameAndId>;
 };
 
 export type FieldError = {
@@ -170,6 +171,12 @@ export type RegisterUserInput = {
   password: Scalars['String'];
 };
 
+export type UsernameAndId = {
+  __typename?: 'usernameAndId';
+  username: Scalars['String'];
+  userId: Scalars['Int'];
+};
+
 export type PostSnippetFragment = (
   { __typename?: 'Post' }
   & Pick<Post, 'title' | 'id' | 'createdAt' | 'updatedAt' | 'points' | 'voteStatus' | 'text'>
@@ -179,6 +186,10 @@ export type PostSnippetFragment = (
   ), comments?: Maybe<Array<(
     { __typename?: 'Comments' }
     & Pick<Comments, 'text'>
+    & { commentor?: Maybe<(
+      { __typename?: 'usernameAndId' }
+      & Pick<UsernameAndId, 'username' | 'userId'>
+    )> }
   )>> }
 );
 
@@ -380,6 +391,10 @@ export const PostSnippetFragmentDoc = gql`
   }
   comments {
     text
+    commentor {
+      username
+      userId
+    }
   }
 }
     `;

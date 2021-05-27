@@ -1,4 +1,4 @@
-import { Box, Divider } from "@chakra-ui/react";
+import { Box, Divider, Stack } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { withUrqlClient } from "next-urql";
 import { Router, useRouter } from "next/router";
@@ -19,9 +19,15 @@ const Post: NextPage = ({}) => {
 
   if (error) return <div>{error.message}</div>;
 
-  if (!data?.post) return <div>couldn't find the post</div>
+  if (!data?.post) return <div>couldn't find the post</div>;
 
-  return <Layout><Box>{data?.post.id}</Box></Layout>;
+  return (
+    <Layout>
+      <Stack spacing={5} m={"auto"} mt={5} padding={0} width="450pt">
+        
+      </Stack>
+    </Layout>
+  );
 };
 
-export default withApollo({ssr : true})(Post);
+export default withApollo({ ssr: true })(Post);

@@ -21,25 +21,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentsResolver = void 0;
+exports.commentsResolver = exports.usernameAndId = void 0;
 const type_graphql_1 = require("type-graphql");
 const Comments_1 = require("../entities/Comments");
 const User_1 = require("../entities/User");
+let usernameAndId = class usernameAndId {
+};
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], usernameAndId.prototype, "username", void 0);
+__decorate([
+    type_graphql_1.Field(() => type_graphql_1.Int),
+    __metadata("design:type", Number)
+], usernameAndId.prototype, "userId", void 0);
+usernameAndId = __decorate([
+    type_graphql_1.ObjectType()
+], usernameAndId);
+exports.usernameAndId = usernameAndId;
 let commentsResolver = class commentsResolver {
-    user(comments) {
+    commentor(comments) {
         return __awaiter(this, void 0, void 0, function* () {
-            return null;
-            return yield User_1.User.findOne(comments.userId);
+            const user = yield User_1.User.findOne(comments.userId);
+            if (!user)
+                return null;
+            return {
+                username: user.username,
+                userId: user.id
+            };
         });
     }
 };
 __decorate([
-    type_graphql_1.FieldResolver(() => User_1.User, { nullable: true }),
+    type_graphql_1.FieldResolver(() => usernameAndId, { nullable: true }),
     __param(0, type_graphql_1.Root()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Comments_1.Comments]),
     __metadata("design:returntype", Promise)
-], commentsResolver.prototype, "user", null);
+], commentsResolver.prototype, "commentor", null);
 commentsResolver = __decorate([
     type_graphql_1.ObjectType(),
     type_graphql_1.Resolver((of) => Comments_1.Comments)
