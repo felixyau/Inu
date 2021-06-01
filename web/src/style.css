@@ -1,0 +1,8 @@
+.container {
+    display:flex;
+    flex-direction: column;
+}
+
+.navbar-icons > *{
+    padding-left: 24px;
+}

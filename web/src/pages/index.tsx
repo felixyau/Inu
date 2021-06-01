@@ -20,6 +20,7 @@ import { PostQuery, usePostsQuery } from "../generated/graphql";
 import { withApollo } from "../utilities/withApollo";
 import { HiOutlineAnnotation } from "react-icons/hi";
 import { useRouter } from "next/router";
+import { UserAndChangeAcc } from "../components/userAndChangeAcc";
 
 const Index = () => {
   const { data, error, loading, fetchMore, variables, updateQuery } =
@@ -41,58 +42,75 @@ const Index = () => {
     );
   }
   return (
-    <>
+    <Flex className="container">
       <Navbar />
-      {!data && loading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <Stack spacing={5} m={"auto"} mt={5} padding={0} width="450pt">
-            {data!.posts.posts.map((post) => (
-              <>
-                <Flex
-                  key={post.id}
-                  p={5}
-                  shadow="md"
-                  borderWidth="1px"
-                  borderRadius="md"
-                  direction="column"
-                >
-                  <UpdootSession post={post} />
-                  <PostContent creator={post.creator} post={post} />
+      <Flex>
+        <Box className="container">
+          {!data && loading ? (
+            <Box>Loading...</Box>
+          ) : (
+            <>
+              <Stack spacing={5} m={"auto"} mt={5} padding={0} width="450pt">
+                {data!.posts.posts.map((post) => (
+                  <>
+                    <Flex
+                      key={post.id}
+                      p={5}
+                      shadow="md"
+                      borderWidth="1px"
+                      borderRadius="md"
+                      direction="column"
+                    >
+                      <UpdootSession post={post} />
+                      <PostContent creator={post.creator} post={post} />
 
-                  <PostAction creator={post.creator} post={post} />
-                  <NextLink href="/post/[id]" as={`/post/${post.id}`}>
-                    <Flex _hover={{ cursor: "pointer" }} align="center" p={0} m={0} direction="column">
-                      <HiOutlineAnnotation size={22}/>
-                      <Text fontSize={12} ml={1.5} m={0} p={0}>
-                        {post.comments?.length} Comments
-                      </Text>
+                      <PostAction creator={post.creator} post={post} />
+                      <NextLink href="/post/[id]" as={`/post/${post.id}`}>
+                        <Flex
+                          _hover={{ cursor: "pointer" }}
+                          align="center"
+                          p={0}
+                          m={0}
+                          direction="column"
+                        >
+                          <HiOutlineAnnotation size={22} />
+                          <Text fontSize={12} ml={1.5} m={0} p={0}>
+                            {post.comments?.length} Comments
+                          </Text>
+                        </Flex>
+                      </NextLink>
                     </Flex>
-                  </NextLink>
-                </Flex>
-              </>
-            ))}
-          </Stack>
-          <Button
-            m={"auto"}
-            isLoading={loading}
-            hidden={!data?.posts.hasMore}
-            onClick={() => {
-              fetchMore({
-                variables: {
-                  limit: variables?.limit,
-                  cursor:
-                    data!.posts.posts[data!.posts.posts.length - 1].createdAt,
-                },
-              });
-            }}
-          >
-            Load more
-          </Button>
-        </>
-      )}
-    </>
+                  </>
+                ))}
+              </Stack>
+              <Button
+                m={"auto"}
+                isLoading={loading}
+                hidden={!data?.posts.hasMore}
+                onClick={() => {
+                  fetchMore({
+                    variables: {
+                      limit: variables?.limit,
+                      cursor:
+                        data!.posts.posts[data!.posts.posts.length - 1]
+                          .createdAt,
+                    },
+                  });
+                }}
+              >
+                Load more
+              </Button>
+            </>
+          )}
+        
+        <Box>
+          <UserAndChangeAcc/>
+          {/* <SuggestedUser/>
+          <ExternalLink/> */}
+        </Box>
+        </Box>
+      </Flex>
+    </Flex>
   );
 };
 

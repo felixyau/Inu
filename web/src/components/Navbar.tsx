@@ -17,7 +17,7 @@ import { isServer } from "../utilities/isServer";
 
 import InuIcon from "../components/inuIcon";
 import { useApolloClient } from "@apollo/client";
-import { AddIcon, MoonIcon } from "@chakra-ui/icons";
+import { AddIcon, LinkIcon, MoonIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 
 interface NavbarProps {}
@@ -37,35 +37,55 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     body = <div>Loading...</div>;
   } else if (!data?.me) {
     body = (
-      <Flex align="center">
-        <NextLink href="/create-post">
-          <Link mr={2}>Create Post</Link>
-        </NextLink>
-        <NextLink href="/register">
-          <Link mr={2}>Register</Link>
-        </NextLink>
-        <NextLink href="/login">
-          <Link>Login</Link>
-        </NextLink>
-      </Flex>
+      <>
+        <Box>
+          <Tooltip label="create post" aria-label="create-post">
+            <IconButton
+              padding={0}
+              margin={0}
+              bg="-moz-initial"
+              aria-label="create-post"
+              icon={<AddIcon />}
+              onClick={() => router.push("/create-post")}
+            ></IconButton>
+          </Tooltip>
+        </Box>
+        <Box>
+          <Tooltip label="create post" aria-label="create-post">
+            <IconButton
+              padding={0}
+              margin={0}
+              bg="-moz-initial"
+              aria-label="create-post"
+              icon={<LinkIcon />}
+              onClick={() => router.push("/register")}
+            ></IconButton>
+          </Tooltip>
+        </Box>
+        <Box>
+          <NextLink href="/login">
+            <Link>Login</Link>
+          </NextLink>
+        </Box>
+      </>
     );
   } else {
     body = (
-      <Flex align="center">
-        <Tooltip label="create post" aria-label="create-post">
-          <IconButton
-            bg="-moz-initial"
-            aria-label="create-post"
-            icon={<AddIcon />}
-            mr={2}
-            onClick={() => router.push("/create-post")}
-          >
-            Create Post
-          </IconButton>
-        </Tooltip>
-        <Text mr={2} ml={"auto"}>
+      <>
+        <Box>
+          <Tooltip label="create post" aria-label="create-post">
+            <IconButton
+              bg="-moz-initial"
+              aria-label="create-post"
+              icon={<AddIcon />}
+              mr={2}
+              onClick={() => router.push("/create-post")}
+            ></IconButton>
+          </Tooltip>
+        </Box>
+        <Box mr={2} ml={"auto"}>
           HI {data.me.username}
-        </Text>
+        </Box>
         <NextLink href="/">
           <Link
             onClick={async () => {
@@ -76,41 +96,40 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             Logout
           </Link>
         </NextLink>
-      </Flex>
+      </>
     );
   }
   return (
-    <Flex
-      zIndex={1}
-      position="sticky"
-      top={0}
-      bg="blue.300"
-      p={4}
-      align="center"
-      padding={0}
-      margin={0}
-      height={70}
-    >
-      <NextLink href="/">
-        <Flex _hover={{ cursor: "pointer" }} align="center" ml={4}>
-          <InuIcon />
-          Shiba
-        </Flex>
-      </NextLink>
+    <Flex align="center" justify="center" bg="blue.300" height={54} top={0} position="sticky" zIndex={100} width="100%">
+      <Flex    
+        p={4}
+        align="center"
+        margin={0}
+        padding={0}
+        width={975}
+      >
+        <NextLink href="/">
+          <Flex _hover={{ cursor: "pointer" }} align="center">
+            <InuIcon />
+            Shiba
+          </Flex>
+        </NextLink>
 
-      <Flex align="center" ml={"auto"}>
-        <Tooltip label="change color theme" aria-label="change-color-theme">
-          <IconButton
-            aria-label="colormode"
-            icon={<MoonIcon />}
-            onClick={toggleColorMode}
-            mr={2}
-            bg="-moz-initial"
-          >
-            {colorMode === "light" ? "Dark" : "Light"}
-          </IconButton>
-        </Tooltip>
-        {body}
+        <Flex align="center" ml={"auto"} border="2px" className="navbar-icons">
+          <Box>
+            <Tooltip label="change color theme" aria-label="change-color-theme">
+              <IconButton
+                aria-label="colormode"
+                icon={<MoonIcon />}
+                onClick={toggleColorMode}
+                bg="-moz-initial"
+              >
+                {colorMode === "light" ? "Dark" : "Light"}
+              </IconButton>
+            </Tooltip>
+          </Box>
+          {body}
+        </Flex>
       </Flex>
     </Flex>
   );
