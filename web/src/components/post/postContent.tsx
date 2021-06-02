@@ -10,7 +10,8 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
-import { Post, User } from "../generated/graphql";
+import { Post, User } from "../../generated/graphql";
+import { FriendsDesciption } from "../FriendsDesciption";
 
 interface PostContentProps {
   post: Pick<
@@ -28,6 +29,8 @@ interface PostContentProps {
 
 export const PostContent: React.FC<PostContentProps> = ({ post, creator }) => {
   return (
+    <Flex>
+    
     <Box h="200px" ml={2} pl="40px">
       <Box>
         <NextLink href="/post/[id]" as={`/post/${post.id}`}>
@@ -44,5 +47,6 @@ export const PostContent: React.FC<PostContentProps> = ({ post, creator }) => {
       </Box>
       <Container isTruncated>{post.text}</Container>
     </Box>
+    </Flex>
   );
 };

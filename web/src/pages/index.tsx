@@ -14,13 +14,16 @@ import NextLink from "next/link";
 import React, { useState } from "react";
 import { Navbar } from "../components/Navbar";
 import { PostAction } from "../components/postAction";
-import { PostContent } from "../components/postContent";
+import { PostContent } from "../components/post/postContent";
 import { UpdootSession } from "../components/UpdootSession";
 import { PostQuery, usePostsQuery } from "../generated/graphql";
 import { withApollo } from "../utilities/withApollo";
 import { HiOutlineAnnotation } from "react-icons/hi";
 import { useRouter } from "next/router";
 import { UserAndChangeAcc } from "../components/userAndChangeAcc";
+import { SuggestedUser } from "../components/SuggestedUser";
+import { UsernameAndPicture } from "../components/post/UsernameAndPicture";
+import { UserInteraction } from "../components/post/UserInteraction";
 
 const Index = () => {
   const { data, error, loading, fetchMore, variables, updateQuery } =
@@ -44,13 +47,14 @@ const Index = () => {
   return (
     <Flex className="container">
       <Navbar />
-      <Flex>
-        <Box className="container">
+      <Flex justify="center">
+      <Flex width="935px" pt="30px">
+        <Box className="container" width="65%">
           {!data && loading ? (
             <Box>Loading...</Box>
           ) : (
             <>
-              <Stack spacing={5} m={"auto"} mt={5} padding={0} width="450pt">
+              <Stack spacing={5} mr="28px" padding={0}>
                 {data!.posts.posts.map((post) => (
                   <>
                     <Flex
@@ -61,11 +65,10 @@ const Index = () => {
                       borderRadius="md"
                       direction="column"
                     >
-                      <UpdootSession post={post} />
+                      <UsernameAndPicture/>
                       <PostContent creator={post.creator} post={post} />
-
-                      <PostAction creator={post.creator} post={post} />
-                      <NextLink href="/post/[id]" as={`/post/${post.id}`}>
+                      <UserInteraction/>
+                      {/* <NextLink href="/post/[id]" as={`/post/${post.id}`}>
                         <Flex
                           _hover={{ cursor: "pointer" }}
                           align="center"
@@ -78,7 +81,7 @@ const Index = () => {
                             {post.comments?.length} Comments
                           </Text>
                         </Flex>
-                      </NextLink>
+                      </NextLink> */}
                     </Flex>
                   </>
                 ))}
@@ -102,13 +105,12 @@ const Index = () => {
               </Button>
             </>
           )}
-        
-        <Box>
-          <UserAndChangeAcc/>
-          {/* <SuggestedUser/>
-          <ExternalLink/> */}
         </Box>
+        <Box width="35%">
+          <UserAndChangeAcc />
+          <SuggestedUser/>
         </Box>
+      </Flex>
       </Flex>
     </Flex>
   );
