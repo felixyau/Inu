@@ -15,10 +15,11 @@ import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isTargetLikeServerless } from "next/dist/next-server/server/config";
 import { isServer } from "../utilities/isServer";
 
-import InuIcon from "../components/inuIcon";
+
 import { useApolloClient } from "@apollo/client";
 import { AddIcon, LinkIcon, MoonIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
+import InuIcon from "../Icons/inuIcon";
 
 interface NavbarProps {}
 

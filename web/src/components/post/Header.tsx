@@ -1,6 +1,8 @@
 import { Flex, Box, Link } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
+import { NameAndDescription } from "../NameAndDescription";
+import { UserIcon } from "../UserIcon";
 
 interface UsernameAndPictureProps {}
 
@@ -9,17 +11,12 @@ export const UsernameAndPicture: React.FC<UsernameAndPictureProps> = ({}) => {
     id: 1,
   };
   return (
-    <Flex border="2px" width="100%">
-      <Box mr="12px">UserIcon</Box>
-      <Flex direction="column" width="68%">
-        <Box>
-          <NextLink href="/user/[id]" as={`/user/${user.id}`}>
-            <Link>UserName</Link>
-          </NextLink>
-        </Box>
-        <Box>UserFullName</Box>
-      </Flex>
-      <Flex align="center" border="2px">
+    <Flex width="100%" padding="16px">
+        <Flex mr="12px" align="center">
+          <UserIcon size="32px"/>
+        </Flex>
+        <NameAndDescription />
+      <Flex align="center" ml="auto">
         <NextLink href="/user/[id]" as={`/user/${user.id}`}>
           <Link fontSize=".5rem">Follow</Link>
         </NextLink>

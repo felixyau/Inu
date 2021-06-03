@@ -9,11 +9,11 @@ interface UserAndChangeAccProps {}
 export const UserAndChangeAcc: React.FC<UserAndChangeAccProps> = () => {
   const userId = 1;
   return (
-    <Flex width="100%">
+    <Flex width="100%" m="18px 0 12px">
       <Box mr="12px">
-        <UserIcon size="50px"/>
-</Box>
-      <NameAndDescription/>
+        <UserIcon size="50px" />
+      </Box>
+      <NameAndDescription />
       <Flex align="center">
         <NextLink href="/user/[id]" as={`/user/${userId}`}>
           <Link fontSize=".5rem">Change</Link>

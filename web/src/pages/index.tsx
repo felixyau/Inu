@@ -13,7 +13,7 @@ import {
 import NextLink from "next/link";
 import React, { useState } from "react";
 import { Navbar } from "../components/Navbar";
-import { PostAction } from "../components/postAction";
+import { PostAction } from "../components/EditAndDelete";
 import { PostContent } from "../components/post/postContent";
 import { UpdootSession } from "../components/UpdootSession";
 import { PostQuery, usePostsQuery } from "../generated/graphql";
@@ -22,7 +22,7 @@ import { HiOutlineAnnotation } from "react-icons/hi";
 import { useRouter } from "next/router";
 import { UserAndChangeAcc } from "../components/userAndChangeAcc";
 import { SuggestedUser } from "../components/SuggestedUser";
-import { UsernameAndPicture } from "../components/post/UsernameAndPicture";
+import { UsernameAndPicture } from "../components/post/Header";
 import { UserInteraction } from "../components/post/UserInteraction";
 
 const Index = () => {
@@ -49,17 +49,16 @@ const Index = () => {
       <Navbar />
       <Flex justify="center">
       <Flex width="935px" pt="30px">
-        <Box className="container" width="65%">
+        <Box className="container" width="68%" mr="28px">
           {!data && loading ? (
             <Box>Loading...</Box>
           ) : (
             <>
-              <Stack spacing={5} mr="28px" padding={0}>
+              <Stack spacing="60px" padding={0}>
                 {data!.posts.posts.map((post) => (
                   <>
                     <Flex
                       key={post.id}
-                      p={5}
                       shadow="md"
                       borderWidth="1px"
                       borderRadius="md"
