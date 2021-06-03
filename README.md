@@ -1,3 +1,3 @@
 # Inu
 
-A fullstack social media project 
+A fullstack social media clone
