@@ -19,7 +19,7 @@ import { isServer } from "../utilities/isServer";
 import { useApolloClient } from "@apollo/client";
 import { AddIcon, LinkIcon, MoonIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-import InuIcon from "../Icons/inuIcon";
+import InuIcon from "../Icons/InuIcon";
 
 interface NavbarProps {}
 

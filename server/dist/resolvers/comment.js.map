@@ -1,1 +1,0 @@
-{"version":3,"file":"comment.js","sourceRoot":"","sources":["../../src/resolvers/comment.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,+CAA2D;AAG3D,IAAa,gBAAgB,GAA7B,MAAa,gBAAgB;IAE3B,KAAK;QACD,OAAO,OAAO,CAAC;IACnB,CAAC;CACF,CAAA;AAHC;IADC,oBAAK,CAAC,GAAE,EAAE,CAAA,MAAM,CAAC;;;;6CAGjB;AAJU,gBAAgB;IAF5B,yBAAU,EAAE;IACZ,uBAAQ,EAAE;GACE,gBAAgB,CAK5B;AALY,4CAAgB"}

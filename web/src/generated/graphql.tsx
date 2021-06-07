@@ -35,7 +35,7 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  comment?: Maybe<Comments>;
+  addComment?: Maybe<Comments>;
   vote: Scalars['Boolean'];
   createPost: PostResponse;
   updatePost: PostResponse;
@@ -48,15 +48,14 @@ export type Mutation = {
 };
 
 
-export type MutationCommentArgs = {
-  postId: Scalars['Float'];
+export type MutationAddCommentArgs = {
+  postId: Scalars['Int'];
   text: Scalars['String'];
 };
 
 
 export type MutationVoteArgs = {
   postId: Scalars['Int'];
-  value: Scalars['Int'];
 };
 
 
@@ -110,12 +109,11 @@ export type Post = {
   title: Scalars['String'];
   text: Scalars['String'];
   points: Scalars['Float'];
-  voteStatus?: Maybe<Scalars['Int']>;
+  voteStatus: Scalars['Boolean'];
   creatorId: Scalars['Float'];
   creator: User;
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
-  TextSnippet: Scalars['String'];
   comments?: Maybe<Array<Comments>>;
 };
 
@@ -212,6 +210,24 @@ export type RegularUserResponseFragment = (
     { __typename?: 'FieldError' }
     & RegularFieldErrorFragment
   )>> }
+);
+
+export type AddCommentMutationVariables = Exact<{
+  postId: Scalars['Int'];
+  text: Scalars['String'];
+}>;
+
+
+export type AddCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { addComment?: Maybe<(
+    { __typename?: 'Comments' }
+    & Pick<Comments, 'postId' | 'text'>
+    & { commentor?: Maybe<(
+      { __typename?: 'usernameAndId' }
+      & Pick<UsernameAndId, 'userId' | 'username'>
+    )> }
+  )> }
 );
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -324,7 +340,6 @@ export type UpdatePostMutation = (
 );
 
 export type VoteMutationVariables = Exact<{
-  value: Scalars['Int'];
   postId: Scalars['Int'];
 }>;
 
@@ -421,6 +436,45 @@ export const RegularUserResponseFragmentDoc = gql`
 }
     ${RegularUserFragmentDoc}
 ${RegularFieldErrorFragmentDoc}`;
+export const AddCommentDocument = gql`
+    mutation AddComment($postId: Int!, $text: String!) {
+  addComment(postId: $postId, text: $text) {
+    commentor {
+      userId
+      username
+    }
+    postId
+    text
+  }
+}
+    `;
+export type AddCommentMutationFn = Apollo.MutationFunction<AddCommentMutation, AddCommentMutationVariables>;
+
+/**
+ * __useAddCommentMutation__
+ *
+ * To run a mutation, you first call `useAddCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCommentMutation, { data, loading, error }] = useAddCommentMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useAddCommentMutation(baseOptions?: Apollo.MutationHookOptions<AddCommentMutation, AddCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddCommentMutation, AddCommentMutationVariables>(AddCommentDocument, options);
+      }
+export type AddCommentMutationHookResult = ReturnType<typeof useAddCommentMutation>;
+export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>;
+export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation changePassword($newPassword: String!, $token: String!) {
   changePassword(newPassword: $newPassword, token: $token) {
@@ -698,8 +752,8 @@ export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutati
 export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
 export const VoteDocument = gql`
-    mutation Vote($value: Int!, $postId: Int!) {
-  vote(value: $value, postId: $postId)
+    mutation Vote($postId: Int!) {
+  vote(postId: $postId)
 }
     `;
 export type VoteMutationFn = Apollo.MutationFunction<VoteMutation, VoteMutationVariables>;
@@ -717,7 +771,6 @@ export type VoteMutationFn = Apollo.MutationFunction<VoteMutation, VoteMutationV
  * @example
  * const [voteMutation, { data, loading, error }] = useVoteMutation({
  *   variables: {
- *      value: // value for 'value'
  *      postId: // value for 'postId'
  *   },
  * });

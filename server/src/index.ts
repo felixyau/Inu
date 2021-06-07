@@ -21,7 +21,7 @@ import { User } from "./entities/User";
 import { userResolver } from "./resolvers/user";
 import path from "path";
 
-import Redis from "ioredis";
+import Redis from "ioredis"
 import session from "express-session";
 import connectRedis from "connect-redis";
 

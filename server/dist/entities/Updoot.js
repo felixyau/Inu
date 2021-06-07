@@ -17,11 +17,6 @@ const User_1 = require("./User");
 let Updoot = class Updoot extends typeorm_1.BaseEntity {
 };
 __decorate([
-    type_graphql_1.Field(() => type_graphql_1.Int),
-    typeorm_1.Column({ type: "int" }),
-    __metadata("design:type", Number)
-], Updoot.prototype, "value", void 0);
-__decorate([
     typeorm_1.PrimaryColumn(),
     __metadata("design:type", Number)
 ], Updoot.prototype, "userId", void 0);

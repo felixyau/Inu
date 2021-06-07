@@ -26,6 +26,9 @@ const theme = extendTheme({
         telegram: {
           color: "#0088cc"
         },
+        black: {
+          color : "#262626"
+        },
       }
     }
   },

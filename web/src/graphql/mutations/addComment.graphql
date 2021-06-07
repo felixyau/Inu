@@ -1,0 +1,13 @@
+mutation AddComment($postId:Int!, $text:String!) {
+  addComment(postId:$postId, text:$text)
+  {
+    commentor
+    {
+      userId
+      username
+    }
+    postId
+    text
+    
+  }
+}

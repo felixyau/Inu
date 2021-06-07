@@ -5,15 +5,16 @@ import { User } from "../entities/User";
 @ObjectType()
 export class usernameAndId {
   @Field()
-  username: string
+  username!: string
 
   @Field(()=>Int)
-  userId: number
+  userId!: number
 }
 
 @ObjectType()
 @Resolver((of) => Comments)
 export class commentsResolver {
+
   @FieldResolver(() => usernameAndId, { nullable: true }) 
   async commentor(@Root() comments: Comments) : Promise<usernameAndId | null>{
     const user = await User.findOne(comments.userId);

@@ -65,8 +65,8 @@ const Index = () => {
                       direction="column"
                     >
                       <UsernameAndPicture/>
-                      <PostContent creator={post.creator} post={post} />
-                      <UserInteraction/>
+                      <PostContent post={post} />
+                      <UserInteraction post={post} />
                       {/* <NextLink href="/post/[id]" as={`/post/${post.id}`}>
                         <Flex
                           _hover={{ cursor: "pointer" }}

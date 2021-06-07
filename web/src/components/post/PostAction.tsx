@@ -1,20 +1,21 @@
 import { Box, Flex, Spacer } from "@chakra-ui/react";
 import React from "react";
+import { Post, PostSnippetFragment } from "../../generated/graphql";
 import { HeartIcon } from "../../Icons/HeartIcon";
 import { ResponseIcon } from "../../Icons/ResponseIcon";
 import { SaveIcon } from "../../Icons/SaveIcon";
 import { ShareIcon } from "../../Icons/ShareIcon";
 
-interface PostActionProps {}
-
-export const PostAction: React.FC<PostActionProps> = ({}) => {
+interface PostActionProps{
+  post: PostSnippetFragment
+}
+export const PostAction: React.FC<PostActionProps> = ({post}) => {
   return (
     <Flex p="0 8px" align="center">
       <span>
         <Box p="8px">
-          <button type="button">
-            <HeartIcon />
-          </button>
+        <HeartIcon post={post}/>
+
         </Box>
       </span>
 
