@@ -1,10 +1,12 @@
 import { ApolloCache } from "@apollo/client";
+import { Router, useRouter } from "next/router";
 import React, { useState } from "react";
 import { gql } from "urql";
 import {
   PostSnippetFragment,
   VoteMutation,
   useVoteMutation,
+  useMeQuery,
 } from "../generated/graphql";
 
 interface HeartIconProps {
@@ -59,16 +61,21 @@ const updateAfterVote = (
 
 export const HeartIcon: React.FC<HeartIconProps> = ({ post }) => {
   const [vote] = useVoteMutation();
-  return (
-    <button
-      type="button"
-      onClick={() =>
-        vote({
+  const router = useRouter();
+  const { data: meData } = useMeQuery();
+
+  const handleClick = () => {
+  const voting = async ():Promise<void> => {
+        const { errors } = await vote({
           variables: { postId: post.id },
           update: (cache) => updateAfterVote(cache, post),
-        })
-      }
-    >
+        });
+    if (errors) console.log("heart errors");}
+    if (!!meData?.me) {console.log("how"); return voting();}
+    return router.push("/login")
+  };
+  return (
+    <button type="button" onClick={() => handleClick()}>
       {post.voteStatus ? (
         <svg
           aria-label="unlike"

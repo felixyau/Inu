@@ -18,12 +18,10 @@ const Updoot_1 = require("../entities/Updoot");
 const CreateUpdootLoader = () => {
     return new dataloader_1.default((keys) => __awaiter(void 0, void 0, void 0, function* () {
         const updoots = yield Updoot_1.Updoot.find(keys);
-        console.log("up:", updoots);
         const keyToUpdoot = {};
         updoots.forEach(u => {
             keyToUpdoot[`${u.postId}|${u.userId}`] = u;
         });
-        console.log(keyToUpdoot);
         return keys.map(key => keyToUpdoot[`${key.postId}|${key.userId}`]);
     }));
 };

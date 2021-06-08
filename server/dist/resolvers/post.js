@@ -85,11 +85,12 @@ let postResolver = class postResolver {
     voteStatus(post, { req, updootLoader }) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!req.session.userId)
-                return null;
+                return false;
             const updoot = yield updootLoader.load({
                 postId: post.id,
                 userId: req.session.userId,
             });
+            console.log("updoot:", updoot);
             return !!updoot;
         });
     }

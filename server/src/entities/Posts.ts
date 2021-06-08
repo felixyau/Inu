@@ -24,7 +24,7 @@ export class Post extends BaseEntity{
     points!: number;
 
     @Field()
-    voteStatus: boolean
+    voteStatus: boolean;
 
     @Field()
     @Column()

@@ -74,11 +74,12 @@ export class postResolver {
     @Root() post: Post,
     @Ctx() { req, updootLoader }: MyContext
   ) :Promise<boolean | null> {
-    if (!req.session.userId) return null;
+    if (!req.session.userId) return false;
     const updoot = await updootLoader.load({
       postId: post.id,
       userId: req.session.userId,
     });
+    console.log("updoot:", updoot)
     return !!updoot;
   }
 

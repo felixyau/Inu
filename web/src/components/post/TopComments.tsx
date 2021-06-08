@@ -12,7 +12,6 @@ interface TopCommentsProps {
 }
 
 export const TopComments: React.FC<TopCommentsProps> = ({ comment }) => {
-console.log("text:",comment.text)
   return (
     <Box as="span">
       <NextLink href="/user/[id]" as={`/user/${comment.commentor?.userId}`}>

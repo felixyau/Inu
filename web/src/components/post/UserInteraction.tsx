@@ -24,11 +24,12 @@ import {
   Maybe,
   PostSnippetFragment,
   useAddCommentMutation,
+  useMeQuery,
   UsernameAndId,
 } from "../../generated/graphql";
 import { Collapse } from "react-collapse";
 import NextLink from "next/link";
-import { PostText } from "./postText";
+import { PostText } from "./PostText";
 import { Formik, useField } from "formik";
 import { TopComments } from "./TopComments";
 import { ApolloCache, gql } from "@apollo/client";
@@ -46,46 +47,35 @@ type comments = Pick<Comments, "text"> & {
   >;
 };
 
-const updateAfterVote = (
+const updateAfterAddComment = (
   cache: ApolloCache<AddCommentMutation>,
   post: PostSnippetFragment,
-  newText: string
+  commentData: comments
 ) => {
   const data = cache.readFragment<{
     id: number;
-    comments: comments;
+    comments: comments[];
   }>({
     id: "Post:" + post.id,
     fragment: gql`
-      fragment __ on Post {
+      fragment _ on Post {
         id
         comments
       }
     `,
   });
-  let realData: {
-    comments:comments
-  };
-  const newComment:comments = {
-    text: newText,
-    commentor: {
-      userId: 
-      username: 
-    }
-  }
-    realData = {
-        comments: [...post.comments?, newComment]
-    };
+
+  let realData: comments[];
+  realData = [...data!.comments, commentData]; //assume incorrect postId is the only case that fragment is not in cache and so data return null
 
   cache.writeFragment({
     id: "Post:" + post.id,
     fragment: gql`
-      fragment __ on Post {
-        points
-        voteStatus
+      fragment _ on Post {
+        comments
       }
     `,
-    data: realData,
+    data: { comments: realData },
   });
 };
 
@@ -93,28 +83,25 @@ export const UserInteraction: React.FC<UserInteractionProps> = ({ post }) => {
   const [height, setHeight] = useState<string | number>("18px");
   const textInput = useRef<HTMLTextAreaElement>(null);
   const [addComment] = useAddCommentMutation();
-  function handleClick(e: any, text: string) {
-    e.preventDefault();
+  const meData = useMeQuery();
+
+  function handleClick(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    text: string
+  ) {
     addComment({
       variables: { postId: post.id, text },
-      update: (cache) => cache.evict({ fieldName: "posts" }),
+      update: (cache, result) => {
+        if (result.data?.addComment)
+          updateAfterAddComment(cache, post, result.data?.addComment);
+      },
     });
+    e.currentTarget.value;
   }
-  // useEffect(() => {
-  //   const tx = document.getElementsByTagName("textarea");
-  //   console.log(tx);
-  //   // for (let i = 0; i < tx.length; i++) {
-  //   //   tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow:hidden;");
-  //   // }
-  //   for (let i = 0; i < tx.length; i++) {
-  //     setHeight(tx[i].scrollHeight.toString());
-  //   }
-  // });
+
   const changeHeight = (e: ChangeEvent) => {
-    setHeight("auto");
     e.target.setAttribute("style", "height:'auto'");
     const scrollHeight = e.target.scrollHeight;
-    console.log("scrollheight:", scrollHeight);
     e.target.setAttribute("style", `height:${scrollHeight}px`); //Why state Height doesn't work
   };
 
@@ -130,9 +117,17 @@ export const UserInteraction: React.FC<UserInteractionProps> = ({ post }) => {
           <>
             {post.comments
               ? post.comments.slice(0, 2).map((comment) => {
-                  console.log("comment:", comment);
                   return <TopComments comment={comment} />;
                 })
+              : null}
+
+            {post.comments && !!meData
+              ? post.comments
+                  .filter(
+                    (comment) =>
+                      comment.commentor?.userId === meData.data?.me?.id
+                  )
+                  .map((comment) => <TopComments comment={comment}/>)
               : null}
           </>
         </Flex>
@@ -142,14 +137,28 @@ export const UserInteraction: React.FC<UserInteractionProps> = ({ post }) => {
         initialValues={{ text: "" }}
         onSubmit={(value) => {
           console.log("value:", value);
-          //setSubmitting(false);
         }}
       >
-        {({ isSubmitting, handleChange, values, handleSubmit }) => {
+        {({
+          isSubmitting,
+          handleChange,
+          values,
+          handleSubmit,
+          setSubmitting,
+          setValues,
+        }) => {
           //const [disable, setDisable] = useState(false);
           const disable = isSubmitting || !values.text.trim();
           return (
-            <form onSubmit={(e) => handleSubmit(e)}>
+            <form
+              className="commentBox"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit(e);
+                setSubmitting(false);
+                setValues({ text: "" });
+              }}
+            >
               <Box p="8px 16px 8px 0">Emoji</Box>
               <Flex align="center" width="100%">
                 <textarea

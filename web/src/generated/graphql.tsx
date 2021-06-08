@@ -222,7 +222,7 @@ export type AddCommentMutation = (
   { __typename?: 'Mutation' }
   & { addComment?: Maybe<(
     { __typename?: 'Comments' }
-    & Pick<Comments, 'postId' | 'text'>
+    & Pick<Comments, 'text'>
     & { commentor?: Maybe<(
       { __typename?: 'usernameAndId' }
       & Pick<UsernameAndId, 'userId' | 'username'>
@@ -443,7 +443,6 @@ export const AddCommentDocument = gql`
       userId
       username
     }
-    postId
     text
   }
 }

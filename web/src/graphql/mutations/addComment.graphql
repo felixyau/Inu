@@ -6,8 +6,6 @@ mutation AddComment($postId:Int!, $text:String!) {
       userId
       username
     }
-    postId
     text
-    
   }
 }
