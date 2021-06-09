@@ -1,4 +1,4 @@
-export const ResponseIcon: React.FC = () => {
+export const CommentIcon: React.FC = () => {
   return (
     <svg
       aria-label="response"

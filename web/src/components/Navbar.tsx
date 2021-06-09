@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     );
   }
   return (
-    <Flex align="center" justify="center" bg="blue.300" height={54} top={0} position="sticky" zIndex={100} width="100%">
+    <Flex align="center" justify="center" bg="blue.300" height={54} top={0} position="sticky" zIndex={2} width="100%">
       <Flex    
         p={4}
         align="center"

@@ -4,14 +4,12 @@ import NextLink from "next/link";
 import { NameAndDescription } from "../NameAndDescription";
 import { UserIcon } from "../UserIcon";
 
-interface UsernameAndPictureProps {}
-
-export const UsernameAndPicture: React.FC<UsernameAndPictureProps> = ({}) => {
+export const Header: React.FC = ({}) => {
   let user = {
     id: 1,
   };
   return (
-    <Flex width="100%" padding="16px">
+    <Flex width="100%" padding="16px" zIndex={1}>
         <Flex mr="12px" align="center">
           <UserIcon size="32px"/>
         </Flex>

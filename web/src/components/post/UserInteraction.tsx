@@ -33,19 +33,12 @@ import { PostText } from "./PostText";
 import { Formik, useField } from "formik";
 import { TopComments } from "./TopComments";
 import { ApolloCache, gql } from "@apollo/client";
+import { comments } from "../../utilities/types";
+
 
 interface UserInteractionProps {
   post: PostSnippetFragment;
 }
-
-type comments = Pick<Comments, "text"> & {
-  commentor?: Maybe<
-    { __typename?: "usernameAndId" } & Pick<
-      UsernameAndId,
-      "username" | "userId"
-    >
-  >;
-};
 
 const updateAfterAddComment = (
   cache: ApolloCache<AddCommentMutation>,
@@ -85,6 +78,7 @@ export const UserInteraction: React.FC<UserInteractionProps> = ({ post }) => {
   const [addComment] = useAddCommentMutation();
   const meData = useMeQuery();
 
+
   function handleClick(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     text: string
@@ -111,9 +105,11 @@ export const UserInteraction: React.FC<UserInteractionProps> = ({ post }) => {
         <Box mb="8px">{post.points} likes</Box>
         <Flex direction="column">
           <PostText post={post} />
-          <Box color="rgba(142,142,142,1)">
+          <NextLink href={`/?id=${post.id}`} as={`/post/${post.id}`}>
+          <Box as="a" style={{cursor: "pointer"}} color="rgba(142,142,142,1)">
             View all {post.comments ? post.comments.length : 0} comments
           </Box>
+          </NextLink>
           <>
             {post.comments
               ? post.comments.slice(0, 2).map((comment) => {
@@ -175,15 +171,14 @@ export const UserInteraction: React.FC<UserInteractionProps> = ({ post }) => {
                   value={values.text}
                 ></textarea>
               </Flex>
-              <Button
-                opacity={disable ? 0.3 : 1}
-                disabled={disable}
-                p="8px 0 8px 16px"
+              <button
+                style = {{opacity:disable ? 0.3 : 1, padding:"8px 0 8px 16px"}}
+                disabled={disable}  
                 type="submit"
                 onClick={(e) => handleClick(e, values.text)}
               >
                 post
-              </Button>
+              </button>
             </form>
           );
         }}

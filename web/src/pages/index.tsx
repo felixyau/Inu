@@ -6,6 +6,7 @@ import {
   Heading,
   IconButton,
   Link,
+  ModalOverlay,
   Spacer,
   Stack,
   Text,
@@ -22,9 +23,26 @@ import { HiOutlineAnnotation } from "react-icons/hi";
 import { useRouter } from "next/router";
 import { UserAndChangeAcc } from "../components/userAndChangeAcc";
 import { SuggestedUser } from "../components/SuggestedUser";
-import { UsernameAndPicture } from "../components/post/Header";
+import { Header } from "../components/post/Header";
 import { UserInteraction } from "../components/post/UserInteraction";
+import ReactDOM from "react-dom";
+import Modal from "react-modal";
+import { Layout } from "../components/Layout";
 
+Modal.setAppElement("#__next");
+const customStyles = {
+  content: {
+    width: "60%",
+    position: "relative",
+  },
+  overlay: {
+    zIndex: 1000,
+    backgroundColor: "rgba(0,0,0,.5)",
+    // display: "flex",
+    // flexDirection: "column",
+    // justifyContent: "center"
+  },
+};
 const Index = () => {
   const { data, error, loading, fetchMore, variables, updateQuery } =
     usePostsQuery({
@@ -45,73 +63,65 @@ const Index = () => {
     );
   }
   return (
-    <Flex className="container">
-      <Navbar />
-      <Flex justify="center">
-      <Flex width="935px" pt="30px">
-        <Box className="container" width="68%" mr="28px">
-          {!data && loading ? (
-            <Box>Loading...</Box>
-          ) : (
-            <>
-              <Stack spacing="60px" padding={0}>
-                {data!.posts.posts.map((post) => (
-                  <>
-                    <Flex
-                      key={post.id}
-                      shadow="md"
-                      borderWidth="1px"
-                      borderRadius="md"
-                      direction="column"
-                    >
-                      <UsernameAndPicture/>
-                      <PostContent post={post} />
-                      <UserInteraction post={post} />
-                      {/* <NextLink href="/post/[id]" as={`/post/${post.id}`}>
-                        <Flex
-                          _hover={{ cursor: "pointer" }}
-                          align="center"
-                          p={0}
-                          m={0}
-                          direction="column"
-                        >
-                          <HiOutlineAnnotation size={22} />
-                          <Text fontSize={12} ml={1.5} m={0} p={0}>
-                            {post.comments?.length} Comments
-                          </Text>
-                        </Flex>
-                      </NextLink> */}
-                    </Flex>
-                  </>
-                ))}
-              </Stack>
-              <Button
-                m={"auto"}
-                isLoading={loading}
-                hidden={!data?.posts.hasMore}
-                onClick={() => {
-                  fetchMore({
-                    variables: {
-                      limit: variables?.limit,
-                      cursor:
-                        data!.posts.posts[data!.posts.posts.length - 1]
-                          .createdAt,
-                    },
-                  });
-                }}
-              >
-                Load more
-              </Button>
-            </>
-          )}
-        </Box>
-        <Box width="35%">
-          <UserAndChangeAcc />
-          <SuggestedUser/>
-        </Box>
+    <Layout>
+      <Modal
+        isOpen={!!router.query.id}
+        onRequestClose={() => router.back()}
+        className=""
+      >
+        <Flex>Hi</Flex>
+      </Modal>
+      <Flex>
+        <Flex maxWidth="935px" width="95%" pt="30px" m="0 auto">
+          <Box className="container" width="68%" mr="28px">
+            {!data && loading ? (
+              <Box>Loading...</Box>
+            ) : (
+              <>
+                <Stack spacing="60px" padding={0}>
+                  {data!.posts.posts.map((post) => (
+                    <>
+                      <Flex
+                        key={post.id}
+                        shadow="md"
+                        borderWidth="1px"
+                        borderRadius="md"
+                        direction="column"
+                      >
+                        <Header />
+                        <PostContent post={post} />
+                        <UserInteraction post={post} />
+                      </Flex>
+                    </>
+                  ))}
+                </Stack>
+                <Button
+                  m={"auto"}
+                  isLoading={loading}
+                  hidden={!data?.posts.hasMore}
+                  onClick={() => {
+                    fetchMore({
+                      variables: {
+                        limit: variables?.limit,
+                        cursor:
+                          data!.posts.posts[data!.posts.posts.length - 1]
+                            .createdAt,
+                      },
+                    });
+                  }}
+                >
+                  Load more
+                </Button>
+              </>
+            )}
+          </Box>
+          <Box width="35%">
+            <UserAndChangeAcc />
+            <SuggestedUser />
+          </Box>
+        </Flex>
       </Flex>
-      </Flex>
-    </Flex>
+      </Layout>
   );
 };
 
