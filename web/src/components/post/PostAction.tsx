@@ -23,7 +23,7 @@ export const PostAction: React.FC<PostActionProps> = ({post}) => {
       <span>
         <Box p="8px">
           <button type="button" onClick = {()=>router.push(`/post/${post.id}`)}>
-            <CommentIcon post={post}/>
+            <CommentIcon/>
           </button>
         </Box>
       </span>
