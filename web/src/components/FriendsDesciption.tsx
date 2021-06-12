@@ -14,7 +14,7 @@ export const FriendsDesciption: React.FC = ({}) => {
     }
   return (
     <Flex m="8px 0">
-    <Flex width="100%" height="32px" border="2px">
+    <Flex width="100%" height="32px">
       <Box mr="12px"><UserIcon  size="35px"/></Box>
       <NameAndDescription/>
       <Flex align="center" ml="auto">

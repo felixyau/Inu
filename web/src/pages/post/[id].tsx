@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Stack, Image, calc } from "@chakra-ui/react";
+import { Box, Divider, Flex, Stack, Image, calc,Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { withUrqlClient } from "next-urql";
 import { Router, useRouter } from "next/router";
@@ -12,10 +12,11 @@ import { Header } from "../../components/post/Header";
 import { TopComments } from "../../components/post/TopComments";
 import { AllComments } from "../../components/post/AllComments";
 import { PostAction } from "../../components/post/PostAction";
+import { CommentBox } from "../../components/post/CommentBox";
 
 const Post: NextPage = ({}) => {
   //what is next page
-  const { data, error, loading } = getPostFromUrl();
+  const { data, error, loading } = getPostFromUrl(); //should be used to skip extra query
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
@@ -40,13 +41,13 @@ const Post: NextPage = ({}) => {
               maxHeight="100%"
             ></Image>
           </Box>
-          <Flex width="335px" direction="column">
-            <Header />
-            <Flex direction="column" maxHeight="372px">
+          <Flex width="335px" direction="column" p="0 16px">
+            <Header post={data.post}/>
+            <Flex direction="column" >
                 <Flex
                   className="commentSession"
                   direction="column"
-                  
+                  height="372px"
                 >
                   {data.post.comments
                     ? data.post.comments.map((comment) => {
@@ -55,6 +56,9 @@ const Post: NextPage = ({}) => {
                     : null}
                 </Flex>
               <PostAction post={data.post}/>
+              <Text className="boldFont">{data.post.points} likes</Text>
+              <Text className="smallFont grayFont">{data.post.createdAt}</Text>
+              <CommentBox post={data.post}/>
             </Flex>
           </Flex>
         </Flex>

@@ -30,6 +30,7 @@ const Updoot_1 = require("../entities/Updoot");
 const Error_1 = require("./Error");
 const User_1 = require("../entities/User");
 const Comments_1 = require("../entities/Comments");
+const tryCatchHell_1 = require("../utilities/tryCatchHell");
 let postInput = class postInput {
 };
 __decorate([
@@ -40,6 +41,10 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], postInput.prototype, "text", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], postInput.prototype, "photo", void 0);
 postInput = __decorate([
     type_graphql_1.InputType()
 ], postInput);
@@ -120,12 +125,9 @@ let postResolver = class postResolver {
     }
     addComment(text, postId, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield Posts_1.Post.findOne(postId);
-            }
-            catch (_a) {
+            const [data, error] = yield tryCatchHell_1.tryCatchHell(Posts_1.Post.findOne(postId));
+            if (error)
                 return null;
-            }
             const comment = yield Comments_1.Comments.create({
                 text,
                 userId: req.session.userId,
@@ -185,6 +187,16 @@ let postResolver = class postResolver {
                         {
                             msg: "Text cannot be blank",
                             field: "text",
+                        },
+                    ],
+                };
+            }
+            if (!input.photo) {
+                return {
+                    errors: [
+                        {
+                            msg: "Photo cannot be empty",
+                            field: "photo",
                         },
                     ],
                 };

@@ -7,41 +7,43 @@ import { SaveIcon } from "../../Icons/SaveIcon";
 import { ShareIcon } from "../../Icons/ShareIcon";
 import { useRouter } from "next/router";
 
-interface PostActionProps{
-  post: PostSnippetFragment
+interface PostActionProps {
+  post: PostSnippetFragment;
 }
-export const PostAction: React.FC<PostActionProps> = ({post}) => {
+export const PostAction: React.FC<PostActionProps> = ({ post }) => {
   const router = useRouter();
   return (
-    <Flex p="0 8px" align="center">
+    <Flex p="0" align="stretch" m="0">
       <span>
-        <Box p="8px">
-        <HeartIcon post={post}/>
+        <Box ml="-8px">
+          <HeartIcon post={post} />
         </Box>
       </span>
 
       <span>
-        <Box p="8px">
-          <button type="button" onClick = {()=>router.push(`/post/${post.id}`)}>
-            <CommentIcon/>
+        <div >
+          <button type="button" className="iconBox" onClick={() => router.push(`/post/${post.id}`)}>
+            <CommentIcon />
           </button>
-        </Box>
+        </div>
       </span>
 
       <span>
-        <Box p="8px">
-          <button type="button">
+        <div>
+          <button type="button" className="iconBox">
             <ShareIcon />
           </button>
-        </Box>
+        </div>
       </span>
-      <Box ml="auto" p="8px">
-        <span>
-          <button type="button">
+      <Spacer />
+
+      <span>
+        <Box mr="-8px">
+          <button type="button" className="iconBox">
             <SaveIcon />
           </button>
-        </span>
-      </Box>
+        </Box>
+      </span>
     </Flex>
   );
 };

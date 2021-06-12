@@ -3,19 +3,21 @@ import React from "react";
 import NextLink from "next/link";
 import { NameAndDescription } from "../NameAndDescription";
 import { UserIcon } from "../UserIcon";
+import { PostSnippetFragment } from "../../generated/graphql";
 
-export const Header: React.FC = ({}) => {
-  let user = {
-    id: 1,
-  };
+interface HeaderProps {
+  post: PostSnippetFragment
+}
+
+export const Header: React.FC<HeaderProps> = ({post}) => {
   return (
-    <Flex width="100%" padding="16px" zIndex={1}>
+    <Flex width="100%" padding="16px 0" zIndex={1}>
         <Flex mr="12px" align="center">
           <UserIcon size="32px"/>
         </Flex>
         <NameAndDescription />
       <Flex align="center" ml="auto">
-        <NextLink href="/user/[id]" as={`/user/${user.id}`}>
+        <NextLink href="/user/[id]" as={`/user/${post.creator.icon}`}>
           <Link fontSize=".5rem">Follow</Link>
         </NextLink>
       </Flex>

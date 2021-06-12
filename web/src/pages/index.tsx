@@ -12,9 +12,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
-import { PostAction } from "../components/EditAndDelete";
+import { PostAction } from "../components/post/PostAction";
 import { PostContent } from "../components/post/postContent";
 import { UpdootSession } from "../components/UpdootSession";
 import { PostQuery, usePostsQuery } from "../generated/graphql";
@@ -25,9 +25,9 @@ import { UserAndChangeAcc } from "../components/userAndChangeAcc";
 import { SuggestedUser } from "../components/SuggestedUser";
 import { Header } from "../components/post/Header";
 import { UserInteraction } from "../components/post/UserInteraction";
-import ReactDOM from "react-dom";
 import Modal from "react-modal";
 import { Layout } from "../components/Layout";
+import {CloudWidget} from "../components/CloudWidget";
 
 Modal.setAppElement("#__next");
 const customStyles = {
@@ -43,14 +43,17 @@ const customStyles = {
     // justifyContent: "center"
   },
 };
+
 const Index = () => {
+  
   const { data, error, loading, fetchMore, variables, updateQuery } =
     usePostsQuery({
       variables: {
-        limit: 2,
+        limit: 10,
         cursor: "",
       },
       notifyOnNetworkStatusChange: true,
+      skip: typeof window === "undefined",
     });
   const router = useRouter();
 
@@ -80,19 +83,24 @@ const Index = () => {
               <>
                 <Stack spacing="60px" padding={0}>
                   {data!.posts.posts.map((post) => (
-                    <>
+                    <Box key={post.id}>
                       <Flex
-                        key={post.id}
+                        
                         shadow="md"
                         borderWidth="1px"
                         borderRadius="md"
                         direction="column"
                       >
-                        <Header />
+                        <Box padding="0 16px">
+                        <Header post={post}/>
+                        </Box>
                         <PostContent post={post} />
+                        <Flex direction="column" p="0 16px">
+                        <PostAction post={post}/>
                         <UserInteraction post={post} />
+                        </Flex>
                       </Flex>
-                    </>
+                    </Box>
                   ))}
                 </Stack>
                 <Button

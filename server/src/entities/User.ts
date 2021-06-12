@@ -16,6 +16,10 @@ export class User extends BaseEntity {
     username!: string;
 
     @Field()
+    @Column({default:"https://pyxis.nymag.com/v1/imgs/8f8/e12/51b54d13d65d8ee3773ce32da03e1fa220-dogecoin.rsquare.w1200.jpg"})
+    icon!: string;
+
+    @Field()
     @Column({unique: true, nullable:true})
     email: string;
 

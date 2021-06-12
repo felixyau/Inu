@@ -20,6 +20,7 @@ import { Updoot } from "../entities/Updoot";
 import { FieldError } from "./Error";
 import { User } from "../entities/User";
 import { Comments } from "../entities/Comments";
+import { tryCatchHell } from "../utilities/tryCatchHell";
 
 @InputType()
 class postInput {
@@ -28,6 +29,9 @@ class postInput {
 
   @Field()
   text!: string;
+
+  @Field()
+  photo!: string;
 }
 
 @ObjectType()
@@ -50,11 +54,6 @@ class PostResponse {
 
 @Resolver((of) => Post)
 export class postResolver {
-  // @FieldResolver(() => String)
-  // TextSnippet(@Root() root: Post) {
-  //   return root.text;
-  // }
-
   @FieldResolver(()=>[Comments], {nullable:true})
   async comments(
     @Root() post:Post
@@ -143,12 +142,9 @@ export class postResolver {
     @Arg("postId", ()=>Int) postId: number,
     @Ctx() { req }: MyContext
   ) : Promise<Comments | null> {
-    try {
-      await Post.findOne(postId);
-    }
-    catch {
-      return null
-    }
+    const [data,error] = await tryCatchHell(Post.findOne(postId))
+    if (error) return null;
+
     const comment = await Comments.create({
       text,
       userId : req.session.userId,
@@ -275,6 +271,16 @@ export class postResolver {
           {
             msg: "Text cannot be blank",
             field: "text",
+          },
+        ],
+      };
+    }
+    if (!input.photo) {
+      return {
+        errors: [
+          {
+            msg: "Photo cannot be empty",
+            field: "photo",
           },
         ],
       };

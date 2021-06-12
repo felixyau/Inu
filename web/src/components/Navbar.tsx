@@ -40,6 +40,8 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     body = (
       <>
         <Box>
+          <NextLink href="/create-post">
+            <a>
           <Tooltip label="create post" aria-label="create-post">
             <IconButton
               padding={0}
@@ -47,21 +49,25 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               bg="-moz-initial"
               aria-label="create-post"
               icon={<AddIcon />}
-              onClick={() => router.push("/create-post")}
             ></IconButton>
           </Tooltip>
+          </a>
+          </NextLink>
         </Box>
         <Box>
-          <Tooltip label="create post" aria-label="create-post">
+          <NextLink href="/register">
+            <a>
+          <Tooltip label="register" aria-label="register">
             <IconButton
               padding={0}
               margin={0}
               bg="-moz-initial"
               aria-label="create-post"
               icon={<LinkIcon />}
-              onClick={() => router.push("/register")}
             ></IconButton>
           </Tooltip>
+          </a>
+          </NextLink>
         </Box>
         <Box>
           <NextLink href="/login">
@@ -74,15 +80,18 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     body = (
       <>
         <Box>
+          <NextLink href="/create-post">
+            <a>
           <Tooltip label="create post" aria-label="create-post">
             <IconButton
               bg="-moz-initial"
               aria-label="create-post"
               icon={<AddIcon />}
               mr={2}
-              onClick={() => router.push("/create-post")}
             ></IconButton>
           </Tooltip>
+            </a>
+          </NextLink>
         </Box>
         <Box mr={2} ml={"auto"}>
           HI {data.me.username}
@@ -110,13 +119,15 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         width={935}
       >
         <NextLink href="/">
+          <a>
           <Flex _hover={{ cursor: "pointer" }} align="center">
             <InuIcon />
             Shiba
           </Flex>
+          </a>
         </NextLink>
 
-        <Flex align="center" ml={"auto"} border="2px" className="navbar-icons">
+        <Flex align="center" ml={"auto"} className="navbar-icons">
           <Box>
             <Tooltip label="change color theme" aria-label="change-color-theme">
               <IconButton

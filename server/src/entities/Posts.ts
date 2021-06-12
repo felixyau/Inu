@@ -24,6 +24,10 @@ export class Post extends BaseEntity{
     points!: number;
 
     @Field()
+    @Column({default:"https://wallpaperaccess.com/full/3446908.jpg"})
+    photo!: string;
+
+    @Field()
     voteStatus: boolean;
 
     @Field()

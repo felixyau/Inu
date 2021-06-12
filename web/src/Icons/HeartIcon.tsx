@@ -75,7 +75,7 @@ export const HeartIcon: React.FC<HeartIconProps> = ({ post }) => {
     return router.push("/login")
   };
   return (
-    <button type="button" onClick={() => handleClick()}>
+    <button className="iconBox" onClick={() => handleClick()}>
       {post.voteStatus ? (
         <svg
           aria-label="unlike"

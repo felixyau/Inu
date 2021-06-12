@@ -1,4 +1,4 @@
-import { Box, Link } from "@chakra-ui/react";
+import { Box, Link, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import NextLink from "next/link";
 import { PostSnippetFragment } from "../../generated/graphql";
@@ -21,7 +21,7 @@ export const PostText: React.FC<PostTextProps> = ({ post }) => {
   return (
     <Box as="span">
       <NextLink href="/user/[id]" as={`/user/${post.creator.id}`}>
-        <Link as="samp" color="rgba(38,38,38,1)" float="left">{post.creator.username}</Link>
+        <Link float="left"><Text className="boldFont">{post.creator.username}</Text></Link>
       </NextLink>
       {!open ? (
         <>

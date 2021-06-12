@@ -39,6 +39,11 @@ __decorate([
 ], Post.prototype, "points", void 0);
 __decorate([
     type_graphql_1.Field(),
+    typeorm_1.Column({ default: "https://wallpaperaccess.com/full/3446908.jpg" }),
+    __metadata("design:type", String)
+], Post.prototype, "photo", void 0);
+__decorate([
+    type_graphql_1.Field(),
     __metadata("design:type", Boolean)
 ], Post.prototype, "voteStatus", void 0);
 __decorate([

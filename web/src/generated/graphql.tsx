@@ -109,6 +109,7 @@ export type Post = {
   title: Scalars['String'];
   text: Scalars['String'];
   points: Scalars['Float'];
+  photo: Scalars['String'];
   voteStatus: Scalars['Boolean'];
   creatorId: Scalars['Float'];
   creator: User;
@@ -147,6 +148,7 @@ export type User = {
   __typename?: 'User';
   id: Scalars['Float'];
   username: Scalars['String'];
+  icon: Scalars['String'];
   email: Scalars['String'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
@@ -161,6 +163,7 @@ export type UserResponse = {
 export type PostInput = {
   title: Scalars['String'];
   text: Scalars['String'];
+  photo: Scalars['String'];
 };
 
 export type RegisterUserInput = {
@@ -177,13 +180,13 @@ export type UsernameAndId = {
 
 export type PostSnippetFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'title' | 'id' | 'createdAt' | 'updatedAt' | 'points' | 'voteStatus' | 'text'>
+  & Pick<Post, 'title' | 'id' | 'createdAt' | 'updatedAt' | 'points' | 'voteStatus' | 'text' | 'photo'>
   & { creator: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username'>
+    & Pick<User, 'id' | 'username' | 'icon'>
   ), comments?: Maybe<Array<(
     { __typename?: 'Comments' }
-    & Pick<Comments, 'text'>
+    & Pick<Comments, 'text' | 'id'>
     & { commentor?: Maybe<(
       { __typename?: 'usernameAndId' }
       & Pick<UsernameAndId, 'username' | 'userId'>
@@ -400,12 +403,15 @@ export const PostSnippetFragmentDoc = gql`
   points
   voteStatus
   text
+  photo
   creator {
     id
     username
+    icon
   }
   comments {
     text
+    id
     commentor {
       username
       userId

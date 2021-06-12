@@ -10,7 +10,7 @@ interface AllCommentsProps {
 }
 export const AllComments: React.FC<AllCommentsProps> = ({ comment }) => {
   return (
-    <Flex width="100%" padding="16px" zIndex={1}>
+    <Flex width="100%" mb="16px" zIndex={1}>
       <Flex mr="12px" align="center">
         <UserIcon size="32px" />
       </Flex>
