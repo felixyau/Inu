@@ -143,5 +143,6 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
           {body}
         </Flex>
       </Flex>
+    </Flex>
   );
 };
