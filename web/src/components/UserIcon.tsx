@@ -5,11 +5,13 @@ import NextLink from "next/link";
 interface UserIconProps {
   size: string;
   align?: string;
+  src: string
 }
 
 export const UserIcon: React.FC<UserIconProps> = ({
   size,
   align,
+  src,
   ...props
 }) => {
   return (
@@ -26,7 +28,7 @@ export const UserIcon: React.FC<UserIconProps> = ({
             height="100%"
             width="100%"
             borderRadius="50%"
-            src="https://pyxis.nymag.com/v1/imgs/8f8/e12/51b54d13d65d8ee3773ce32da03e1fa220-dogecoin.rsquare.w1200.jpg"
+            src={src}
           />
         </Circle>
       </a>

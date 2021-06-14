@@ -56,9 +56,9 @@ export class userResolver {
   async userProfile(
     @Arg("id", ()=>Int) id:number,
   ): Promise<User|null> {
-    const [data, error] = await tryCatchHell(User.findOne(id));
-    if(error) return null;
-    return data;
+    const user = await User.findOne(id);
+    if(!user) return null;
+    return user;
   }
 
   @Query(() => User, { nullable: true })
@@ -72,10 +72,10 @@ export class userResolver {
     @Arg("id", ()=>Int) id:number,
     @Arg("url") url:string,
   ): Promise<User|null> {
-    const [user, error] = await tryCatchHell(User.findOne(id));
-    if(error) return null;
-    user!.icon = url;
-    User.save(user!)
+    const user = await User.findOne(id);
+    if(!user) return null;
+    user.icon = url;
+    User.save(user)
     return user;
   }
 

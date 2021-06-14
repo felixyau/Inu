@@ -34,7 +34,6 @@ const registerUserInput_1 = require("./registerUserInput");
 const Error_1 = require("./Error");
 const uuid_1 = require("uuid");
 const sendEmails_1 = require("../utilities/sendEmails");
-const tryCatchHell_1 = require("../utilities/tryCatchHell");
 let UserResponse = class UserResponse {
 };
 __decorate([
@@ -60,10 +59,10 @@ let userResolver = class userResolver {
     }
     userProfile(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const [data, error] = yield tryCatchHell_1.tryCatchHell(User_1.User.findOne(id));
-            if (error)
+            const user = yield User_1.User.findOne(id);
+            if (!user)
                 return null;
-            return data;
+            return user;
         });
     }
     me({ req }) {
@@ -75,8 +74,8 @@ let userResolver = class userResolver {
     }
     editUserProfile(id, url) {
         return __awaiter(this, void 0, void 0, function* () {
-            const [user, error] = yield tryCatchHell_1.tryCatchHell(User_1.User.findOne(id));
-            if (error)
+            const user = yield User_1.User.findOne(id);
+            if (!user)
                 return null;
             user.icon = url;
             User_1.User.save(user);
