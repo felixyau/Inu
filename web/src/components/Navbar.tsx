@@ -51,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     );
   } else {
     body = (
-      <Flex align="center">
+      <Flex align="center" width="100%" justify="center">
         <Tooltip label="create post" aria-label="create-post">
           <IconButton
             bg="-moz-initial"
@@ -80,23 +80,18 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     );
   }
   return (
-    <Flex
-      zIndex={1}
-      position="sticky"
-      top={0}
-      bg="blue.300"
-      p={4}
-      align="center"
-      padding={0}
-      margin={0}
-      height={70}
+    <div
+    className="Navbar"
+
     >
+      <Flex flex={1} m="auto" align="center" maxW={800}> 
       <NextLink href="/">
         <Flex _hover={{ cursor: "pointer" }} align="center" ml={4}>
           <InuIcon />
           Shiba
         </Flex>
       </NextLink>
+      </Flex>
 
       <Flex align="center" ml={"auto"}>
         <Tooltip label="change color theme" aria-label="change-color-theme">
@@ -112,6 +107,6 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         </Tooltip>
         {body}
       </Flex>
-    </Flex>
+    </div>
   );
 };

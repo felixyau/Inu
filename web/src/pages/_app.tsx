@@ -3,6 +3,7 @@ import theme from "../theme";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import React from "react";
 import { PaginatedPost, PostQuery } from "../generated/graphql";
+import '../index.css'
 
 function MyApp({ Component, pageProps }: any) {
   return (

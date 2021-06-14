@@ -1,0 +1,12 @@
+.Navbar {
+    position: sticky;
+    z-index: 1;
+    background-color:-moz-initial;
+    
+    align-items:stretch;
+    padding:0;
+    margin:0;
+    border-shadow:md;
+    border-bottom:1px;
+    border-radius:md;
+}
