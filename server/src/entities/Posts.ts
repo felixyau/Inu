@@ -23,8 +23,12 @@ export class Post extends BaseEntity{
     @Column({default:0,type:"int"})
     points!: number;
 
-    @Field(()=>Int, {nullable:true})
-    voteStatus: number | null; //1 or -1 or null
+    @Field()
+    @Column({default:"https://wallpaperaccess.com/full/3446908.jpg"})
+    photo!: string;
+
+    @Field()
+    voteStatus: boolean;
 
     @Field()
     @Column()

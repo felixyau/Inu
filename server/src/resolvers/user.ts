@@ -6,6 +6,7 @@ import {
   Ctx,
   Field,
   FieldResolver,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -19,6 +20,12 @@ import { registerUserInput } from "./registerUserInput";
 import { FieldError } from "./Error";
 import { v4 } from "uuid";
 import { sendEmails } from "../utilities/sendEmails";
+import { tryCatchHell } from "../utilities/tryCatchHell";
+
+
+// interface trycatchHellType {
+//   (param:any):Promise<any>
+// }
 
 @ObjectType()
 class UserResponse {
@@ -45,10 +52,31 @@ export class userResolver {
     return User.find();
   }
 
+  @Query(() => User, {nullable:true})
+  async userProfile(
+    @Arg("id", ()=>Int) id:number,
+  ): Promise<User|null> {
+    const [data, error] = await tryCatchHell(User.findOne(id));
+    if(error) return null;
+    return data;
+  }
+
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) return null;
     return User.findOne(req.session.userId);
+  }
+
+  @Mutation(() => User, {nullable:true})
+  async editUserProfile(
+    @Arg("id", ()=>Int) id:number,
+    @Arg("url") url:string,
+  ): Promise<User|null> {
+    const [user, error] = await tryCatchHell(User.findOne(id));
+    if(error) return null;
+    user!.icon = url;
+    User.save(user!)
+    return user;
   }
 
   @Mutation(() => UserResponse)

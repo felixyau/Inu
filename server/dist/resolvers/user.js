@@ -34,6 +34,7 @@ const registerUserInput_1 = require("./registerUserInput");
 const Error_1 = require("./Error");
 const uuid_1 = require("uuid");
 const sendEmails_1 = require("../utilities/sendEmails");
+const tryCatchHell_1 = require("../utilities/tryCatchHell");
 let UserResponse = class UserResponse {
 };
 __decorate([
@@ -57,11 +58,29 @@ let userResolver = class userResolver {
     users() {
         return User_1.User.find();
     }
+    userProfile(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const [data, error] = yield tryCatchHell_1.tryCatchHell(User_1.User.findOne(id));
+            if (error)
+                return null;
+            return data;
+        });
+    }
     me({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!req.session.userId)
                 return null;
             return User_1.User.findOne(req.session.userId);
+        });
+    }
+    editUserProfile(id, url) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const [user, error] = yield tryCatchHell_1.tryCatchHell(User_1.User.findOne(id));
+            if (error)
+                return null;
+            user.icon = url;
+            User_1.User.save(user);
+            return user;
         });
     }
     changePassword(token, newPassword, { redis }) {
@@ -221,11 +240,26 @@ __decorate([
 ], userResolver.prototype, "users", null);
 __decorate([
     type_graphql_1.Query(() => User_1.User, { nullable: true }),
+    __param(0, type_graphql_1.Arg("id", () => type_graphql_1.Int)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], userResolver.prototype, "userProfile", null);
+__decorate([
+    type_graphql_1.Query(() => User_1.User, { nullable: true }),
     __param(0, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], userResolver.prototype, "me", null);
+__decorate([
+    type_graphql_1.Mutation(() => User_1.User, { nullable: true }),
+    __param(0, type_graphql_1.Arg("id", () => type_graphql_1.Int)),
+    __param(1, type_graphql_1.Arg("url")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:returntype", Promise)
+], userResolver.prototype, "editUserProfile", null);
 __decorate([
     type_graphql_1.Mutation(() => UserResponse),
     __param(0, type_graphql_1.Arg("token")),

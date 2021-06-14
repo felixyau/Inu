@@ -1,4 +1,4 @@
-import { Box, Button, Link } from "@chakra-ui/react";
+import { Box, Button, Flex, Link } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
@@ -19,13 +19,17 @@ const Login: React.FC = ({}) => {
       <Formik
         initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await login({variables:values, update: (cache)=>cache.evict({fieldName:"me"})});
+          const response = await login({
+            variables: values,
+            update: (cache) => cache.evict({ fieldName: "me" }),
+          });
           if (response.data?.login.errors) {
             setErrors(errorMaps(response.data.login.errors));
           } else if (response.data?.login.user) {
-            if (typeof router.query.next === "string") router.replace(router.query.next);
+            if (typeof router.query.next === "string")
+              router.replace(router.query.next);
             else {
-              router.replace("/")
+              router.replace("/");
             }
           }
         }}
@@ -45,11 +49,18 @@ const Login: React.FC = ({}) => {
                 type="password"
               />
             </Box>
-            <Box>
-              <NextLink href="/forgot-password">
-                <Link>forgot password?</Link>
-              </NextLink>
-            </Box>
+            <Flex>
+              <Box>
+                <NextLink href="/forgot-password">
+                  <Link>forgot password?</Link>
+                </NextLink>
+              </Box>
+              <Box ml="auto">
+                <NextLink href="/register">
+                  <Link>sign up</Link>
+                </NextLink>
+              </Box>
+            </Flex>
             <Button
               mt={4}
               type="submit"
@@ -64,4 +75,4 @@ const Login: React.FC = ({}) => {
     </Wrapper>
   );
 };
-export default withApollo({ssr : false})(Login);
+export default withApollo({ ssr: false })(Login);

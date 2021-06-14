@@ -1,0 +1,86 @@
+body {
+  font-size:14px;
+  margin:0;
+  padding:0;
+  line-height:18px;
+  box-sizing: border-box;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-icons > * {
+  padding-left: 24px;
+}
+
+/* .commentInput {
+    resize: none;
+    cursor: text;
+    box-shadow: none;
+    outline: none;
+    max-height: 80px;
+    padding: 0;
+    overflow:auto;
+    font-size:14px;
+    line-height: 18px; /*y line-height and overflowauto but not height and overflowauto  
+} */
+
+.commentInput {
+  overflow: auto;
+  max-height: 100%;
+  resize: none;
+  width: 100%;
+  cursor: text;
+  font-size: 14px;
+  line-height: 18px;
+  background: 0 0;
+  padding: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+.commentBox {
+  display: flex;
+  border-top: 1px solid rgba(238,238,238,1);
+  max-height: 80px;
+  padding: 0;
+  margin-top: 4px;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+.commentSession {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /*firefox*/
+  overflow: scroll;
+  border-top: 1px solid rgba(238,238,238,1);
+  border-bottom: 1px solid rgba(238,238,238,1);
+  height:calc(100% - 32px);
+}
+.commentSession::-webkit-scrollbar { /*Chrome, Safari and Opera*/
+    display:none; 
+}
+
+.iconBox {
+  padding: 8px;
+  overflow: hidden;
+  height:40px;
+}
+
+.boldFont {
+  color: rgba(38,38,38,1);
+  font-weight: 600;
+}
+
+.grayFont {
+color:rgba(142,142,142,1);
+}
+
+.smallFont {
+  font-size: 10px;
+}

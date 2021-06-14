@@ -3,7 +3,8 @@ import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
 import router from "next/router";
-import React from "react";
+import React, { useEffect } from "react";
+import { CloudWidget } from "../components/CloudWidget";
 import { InputField } from "../components/InputField";
 import { Layout } from "../components/Layout";
 import { useCreatePostMutation, useMeQuery } from "../generated/graphql";
@@ -12,17 +13,18 @@ import { errorMaps } from "../utilities/errorMap";
 import { withApollo } from "../utilities/withApollo";
 
 export const CreatePost: React.FC = () => {
+
   const { data, loading } = useMeQuery();
   const [createPost] = useCreatePostMutation();
   return !loading && !data?.me ? (
-    <Layout variant="small">
+    <Layout>
       <Box >You need to login before you create a post</Box>
       <NextLink href="./login?next=create-post"><Link onClick={()=>console.log("click")}style={{ color: "#0088cc" }}>login here</Link></NextLink>
     </Layout>
   ) : (
-    <Layout variant="small">
+    <Layout>
       <Formik
-        initialValues={{ title: "", text: "" }}
+        initialValues={{ title: "", text: "", photo:"" }}
         onSubmit={async (values, { setErrors }) => {
           const { errors, data } = await createPost({
             variables: { input: values },
@@ -33,7 +35,7 @@ export const CreatePost: React.FC = () => {
           else if (!errors) router.push("./");
         }}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting,setValues,values }) => (
           <Form>
             <InputField name="title" placeholder="title" label="Title" />
             <Box mt={4}>
@@ -44,6 +46,13 @@ export const CreatePost: React.FC = () => {
                 label="Text"
               />
             </Box>
+            <Box mt={4}>
+              <InputField
+                name="photo"
+                placeholder="photo"
+                label="Photo"
+              />
+            </Box>
             <Button
               mt={4}
               type="submit"
@@ -52,7 +61,9 @@ export const CreatePost: React.FC = () => {
             >
               Create
             </Button>
+            <CloudWidget values={values} setValues={setValues}/>
           </Form>
+          
         )}
       </Formik>
     </Layout>

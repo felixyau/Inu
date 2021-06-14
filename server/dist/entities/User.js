@@ -29,6 +29,11 @@ __decorate([
 ], User.prototype, "username", void 0);
 __decorate([
     type_graphql_1.Field(),
+    typeorm_1.Column({ default: "https://pyxis.nymag.com/v1/imgs/8f8/e12/51b54d13d65d8ee3773ce32da03e1fa220-dogecoin.rsquare.w1200.jpg" }),
+    __metadata("design:type", String)
+], User.prototype, "icon", void 0);
+__decorate([
+    type_graphql_1.Field(),
     typeorm_1.Column({ unique: true, nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);

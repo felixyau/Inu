@@ -7,9 +7,9 @@ import { User } from "./User";
 @ObjectType()
 @Entity()
 export class Updoot extends BaseEntity {
-    @Field(()=>Int)
-    @Column({ type:"int" })
-    value: number;
+    // @Field(()=>Int)
+    // @Column({ type:"int" })
+    // value: number;
 
     @PrimaryColumn()
     userId: number;

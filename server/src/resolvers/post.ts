@@ -20,6 +20,7 @@ import { Updoot } from "../entities/Updoot";
 import { FieldError } from "./Error";
 import { User } from "../entities/User";
 import { Comments } from "../entities/Comments";
+import { tryCatchHell } from "../utilities/tryCatchHell";
 
 @InputType()
 class postInput {
@@ -28,6 +29,9 @@ class postInput {
 
   @Field()
   text!: string;
+
+  @Field()
+  photo!: string;
 }
 
 @ObjectType()
@@ -50,11 +54,6 @@ class PostResponse {
 
 @Resolver((of) => Post)
 export class postResolver {
-  @FieldResolver(() => String)
-  TextSnippet(@Root() root: Post) {
-    return root.text.slice(0, 50);
-  }
-
   @FieldResolver(()=>[Comments], {nullable:true})
   async comments(
     @Root() post:Post
@@ -69,17 +68,18 @@ export class postResolver {
     return userLoader.load(post.creatorId);
   }
 
-  @FieldResolver(() => Int, { nullable: true })
+  @FieldResolver(() => Boolean, { nullable: true })
   async voteStatus(
     @Root() post: Post,
     @Ctx() { req, updootLoader }: MyContext
-  ) {
-    if (!req.session.userId) return null;
+  ) :Promise<boolean | null> {
+    if (!req.session.userId) return false;
     const updoot = await updootLoader.load({
       postId: post.id,
       userId: req.session.userId,
     });
-    return updoot?.value;
+    console.log("updoot:", updoot)
+    return !!updoot;
   }
 
   @Query(() => PaginatedPost)
@@ -137,17 +137,14 @@ export class postResolver {
 
   @Mutation(()=> Comments, {nullable:true})
   @UseMiddleware(isAuth)
-  async comment(
+  async addComment(
     @Arg("text") text: string,
-    @Arg("postId") postId: number,
+    @Arg("postId", ()=>Int) postId: number,
     @Ctx() { req }: MyContext
   ) : Promise<Comments | null> {
-    try {
-      await Post.findOne(postId);
-    }
-    catch {
-      return null
-    }
+    const [data,error] = await tryCatchHell(Post.findOne(postId))
+    if (error) return null;
+
     const comment = await Comments.create({
       text,
       userId : req.session.userId,
@@ -160,36 +157,35 @@ export class postResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async vote(
-    @Arg("value", () => Int) value: number,
     @Arg("postId", () => Int) postId: number,
     @Ctx() { req }: MyContext
   ) {
     //sql style
     const { userId } = req.session;
     const updoot = await Updoot.findOne({ postId, userId });
-    const upvote = value !== -1;
-    const realValue = upvote ? 1 : -1;
+    // const upvote = value !== -1;
+    // const realValue = upvote ? 1 : -1;
     //voted before
-    if (updoot && updoot.value !== realValue) {
-      await getConnection().transaction(async (tm) => {
-        await tm.query(
-          `
-        UPDATE updoot 
-        SET value = $1
-        WHERE "postId" = $2 AND "userId" = $3
-        `,
-          [realValue, postId, userId]
-        );
-        await tm.query(
-          `
-        UPDATE post 
-        SET points = points + $1
-        WHERE "id" = $2
-        `,
-          [realValue * 2, postId]
-        );
-      });
-    } else if (updoot && updoot.value === realValue) {
+    // if (updoot && updoot.value !== realValue) {
+    //   await getConnection().transaction(async (tm) => {
+    //     await tm.query(
+    //       `
+    //     UPDATE updoot 
+    //     SET value = $1
+    //     WHERE "postId" = $2 AND "userId" = $3
+    //     `,
+    //       [realValue, postId, userId]
+    //     );
+    //     await tm.query(
+    //       `
+    //     UPDATE post 
+    //     SET points = points + $1
+    //     WHERE "id" = $2
+    //     `,
+    //       [realValue * 2, postId]
+    //     );
+    //   });}
+      if (updoot) {
       await getConnection().transaction(async (tm) => {
         await tm.query(
           `
@@ -201,28 +197,28 @@ export class postResolver {
         await tm.query(
           `
         UPDATE post 
-        SET points = points - $1
-        WHERE id = $2
+        SET points = points - 1
+        WHERE id = $1
         `,
-          [realValue, postId]
+          [postId]
         );
       });
     } else {
       await getConnection().transaction(async (tm) => {
         await tm.query(
           `
-        INSERT INTO updoot ("userId","postId", value)
-        VALUES ($1,$2,$3);`,
-          [userId, postId, value]
+        INSERT INTO updoot ("userId","postId")
+        VALUES ($1,$2);`,
+          [userId, postId]
         );
 
         await tm.query(
           `
         UPDATE post
-        SET points = points + $1
-        WHERE id = $2;
+        SET points = points + 1
+        WHERE id = $1;
         `,
-          [realValue, postId]
+          [postId]
         );
       });
     }
@@ -275,6 +271,16 @@ export class postResolver {
           {
             msg: "Text cannot be blank",
             field: "text",
+          },
+        ],
+      };
+    }
+    if (!input.photo) {
+      return {
+        errors: [
+          {
+            msg: "Photo cannot be empty",
+            field: "photo",
           },
         ],
       };

@@ -6,12 +6,15 @@ fragment PostSnippet on Post {
   points
   voteStatus
   text
+  photo
   creator {
     id
     username
+    icon
   }
   comments {
     text
+    id
     commentor {
       username
       userId

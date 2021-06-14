@@ -1,6 +1,6 @@
 import React from "react";
 
-const InuIcon = () => {
+const InuIcon: React.FC = () => {
   return (
     <svg
       version="1.0"

@@ -30,6 +30,7 @@ const Updoot_1 = require("../entities/Updoot");
 const Error_1 = require("./Error");
 const User_1 = require("../entities/User");
 const Comments_1 = require("../entities/Comments");
+const tryCatchHell_1 = require("../utilities/tryCatchHell");
 let postInput = class postInput {
 };
 __decorate([
@@ -40,6 +41,10 @@ __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
 ], postInput.prototype, "text", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    __metadata("design:type", String)
+], postInput.prototype, "photo", void 0);
 postInput = __decorate([
     type_graphql_1.InputType()
 ], postInput);
@@ -71,9 +76,6 @@ PostResponse = __decorate([
     type_graphql_1.ObjectType()
 ], PostResponse);
 let postResolver = class postResolver {
-    TextSnippet(root) {
-        return root.text.slice(0, 50);
-    }
     comments(post) {
         return __awaiter(this, void 0, void 0, function* () {
             const comments = yield Comments_1.Comments.find({ postId: post.id });
@@ -88,12 +90,13 @@ let postResolver = class postResolver {
     voteStatus(post, { req, updootLoader }) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!req.session.userId)
-                return null;
+                return false;
             const updoot = yield updootLoader.load({
                 postId: post.id,
                 userId: req.session.userId,
             });
-            return updoot === null || updoot === void 0 ? void 0 : updoot.value;
+            console.log("updoot:", updoot);
+            return !!updoot;
         });
     }
     posts(limit, cursor, { req }) {
@@ -120,14 +123,11 @@ let postResolver = class postResolver {
     post(id) {
         return Posts_1.Post.findOne(id);
     }
-    comment(text, postId, { req }) {
+    addComment(text, postId, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield Posts_1.Post.findOne(postId);
-            }
-            catch (_a) {
+            const [data, error] = yield tryCatchHell_1.tryCatchHell(Posts_1.Post.findOne(postId));
+            if (error)
                 return null;
-            }
             const comment = yield Comments_1.Comments.create({
                 text,
                 userId: req.session.userId,
@@ -137,27 +137,11 @@ let postResolver = class postResolver {
             return comment;
         });
     }
-    vote(value, postId, { req }) {
+    vote(postId, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const { userId } = req.session;
             const updoot = yield Updoot_1.Updoot.findOne({ postId, userId });
-            const upvote = value !== -1;
-            const realValue = upvote ? 1 : -1;
-            if (updoot && updoot.value !== realValue) {
-                yield typeorm_1.getConnection().transaction((tm) => __awaiter(this, void 0, void 0, function* () {
-                    yield tm.query(`
-        UPDATE updoot 
-        SET value = $1
-        WHERE "postId" = $2 AND "userId" = $3
-        `, [realValue, postId, userId]);
-                    yield tm.query(`
-        UPDATE post 
-        SET points = points + $1
-        WHERE "id" = $2
-        `, [realValue * 2, postId]);
-                }));
-            }
-            else if (updoot && updoot.value === realValue) {
+            if (updoot) {
                 yield typeorm_1.getConnection().transaction((tm) => __awaiter(this, void 0, void 0, function* () {
                     yield tm.query(`
         DELETE FROM  updoot
@@ -165,21 +149,21 @@ let postResolver = class postResolver {
         `, [postId, userId]);
                     yield tm.query(`
         UPDATE post 
-        SET points = points - $1
-        WHERE id = $2
-        `, [realValue, postId]);
+        SET points = points - 1
+        WHERE id = $1
+        `, [postId]);
                 }));
             }
             else {
                 yield typeorm_1.getConnection().transaction((tm) => __awaiter(this, void 0, void 0, function* () {
                     yield tm.query(`
-        INSERT INTO updoot ("userId","postId", value)
-        VALUES ($1,$2,$3);`, [userId, postId, value]);
+        INSERT INTO updoot ("userId","postId")
+        VALUES ($1,$2);`, [userId, postId]);
                     yield tm.query(`
         UPDATE post
-        SET points = points + $1
-        WHERE id = $2;
-        `, [realValue, postId]);
+        SET points = points + 1
+        WHERE id = $1;
+        `, [postId]);
                 }));
             }
             return true;
@@ -203,6 +187,16 @@ let postResolver = class postResolver {
                         {
                             msg: "Text cannot be blank",
                             field: "text",
+                        },
+                    ],
+                };
+            }
+            if (!input.photo) {
+                return {
+                    errors: [
+                        {
+                            msg: "Photo cannot be empty",
+                            field: "photo",
                         },
                     ],
                 };
@@ -255,13 +249,6 @@ let postResolver = class postResolver {
     }
 };
 __decorate([
-    type_graphql_1.FieldResolver(() => String),
-    __param(0, type_graphql_1.Root()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Posts_1.Post]),
-    __metadata("design:returntype", void 0)
-], postResolver.prototype, "TextSnippet", null);
-__decorate([
     type_graphql_1.FieldResolver(() => [Comments_1.Comments], { nullable: true }),
     __param(0, type_graphql_1.Root()),
     __metadata("design:type", Function),
@@ -276,7 +263,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], postResolver.prototype, "creator", null);
 __decorate([
-    type_graphql_1.FieldResolver(() => type_graphql_1.Int, { nullable: true }),
+    type_graphql_1.FieldResolver(() => Boolean, { nullable: true }),
     __param(0, type_graphql_1.Root()),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
@@ -303,20 +290,19 @@ __decorate([
     type_graphql_1.Mutation(() => Comments_1.Comments, { nullable: true }),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
     __param(0, type_graphql_1.Arg("text")),
-    __param(1, type_graphql_1.Arg("postId")),
+    __param(1, type_graphql_1.Arg("postId", () => type_graphql_1.Int)),
     __param(2, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Number, Object]),
     __metadata("design:returntype", Promise)
-], postResolver.prototype, "comment", null);
+], postResolver.prototype, "addComment", null);
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
-    __param(0, type_graphql_1.Arg("value", () => type_graphql_1.Int)),
-    __param(1, type_graphql_1.Arg("postId", () => type_graphql_1.Int)),
-    __param(2, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg("postId", () => type_graphql_1.Int)),
+    __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, Object]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], postResolver.prototype, "vote", null);
 __decorate([

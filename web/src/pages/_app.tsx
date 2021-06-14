@@ -3,13 +3,14 @@ import theme from "../theme";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import React from "react";
 import { PaginatedPost, PostQuery } from "../generated/graphql";
-import '../index.css'
+import "../style.css";
+import { Head } from "next/document";
 
 function MyApp({ Component, pageProps }: any) {
   return (
-      <ChakraProvider resetCSS theme={theme}>
-        <Component {...pageProps} />
-      </ChakraProvider>
+    <ChakraProvider resetCSS theme={theme}>
+      <Component {...pageProps} />
+    </ChakraProvider>
   );
 }
 
