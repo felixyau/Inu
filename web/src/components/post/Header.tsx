@@ -13,7 +13,7 @@ export const Header: React.FC<HeaderProps> = ({post}) => {
   return (
     <Flex width="100%" padding="16px 0" zIndex={1}>
         <Flex mr="12px" align="center">
-          <UserIcon size="32px"/>
+          <UserIcon src={post.creator.icon} size="32px"/>
         </Flex>
         <NameAndDescription />
       <Flex align="center" ml="auto">

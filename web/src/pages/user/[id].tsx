@@ -15,8 +15,8 @@ const UserProfile: React.FC = ({}) => {
 
   return (
     <>
-  <UserIcon size="60px"/>
-  <CloudWidget/>
+  <UserIcon size="60px" src={data.post.creator.icon}/>
+  {/* <CloudWidget/> */}
   </>
   );
 }
