@@ -1,22 +1,17 @@
 import { Box, Link, Text } from "@chakra-ui/react";
 import React from "react";
-import { Comments, Maybe, UsernameAndId } from "../../generated/graphql";
+import { Comments, Maybe } from "../../generated/graphql";
 import NextLink from "next/link";
+import { comments } from "../../utilities/types";
 
 interface TopCommentsProps {
-  comment: Pick<Comments, "text"> & {
-    commentor?: Maybe<
-      {
-        __typename?: "usernameAndId" | undefined;
-      } & Pick<UsernameAndId, "username" | "userId">
-    >;
-  };
+  comment: comments
 }
 
 export const TopComments: React.FC<TopCommentsProps> = ({ comment }) => {
   return (
     <Box as="span">
-      <NextLink href="/user/[id]" as={`/user/${comment.commentor?.userId}`}>
+      <NextLink href="/user/[id]" as={`/user/${comment.commentor?.id}`}>
         <Link float="left">
           <Text className="boldFont">{comment.commentor?.username}</Text>
         </Link>

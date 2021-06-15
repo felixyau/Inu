@@ -25,7 +25,6 @@ import {
   PostSnippetFragment,
   useAddCommentMutation,
   useMeQuery,
-  UsernameAndId,
 } from "../../generated/graphql";
 import { Collapse } from "react-collapse";
 import NextLink from "next/link";
@@ -66,7 +65,7 @@ export const UserInteraction: React.FC<UserInteractionProps> = ({ post }) => {
               ? post.comments
                   .filter(
                     (comment) =>
-                      comment.commentor?.userId === meData.data?.me?.id
+                      comment.commentor?.id === meData.data?.me?.id
                   )
                   .map((comment) => <TopComments key={comment.id} comment={comment}/>)
               : null}

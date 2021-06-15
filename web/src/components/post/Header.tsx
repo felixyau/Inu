@@ -6,18 +6,27 @@ import { UserIcon } from "../UserIcon";
 import { PostSnippetFragment } from "../../generated/graphql";
 
 interface HeaderProps {
-  post: PostSnippetFragment
+  post: PostSnippetFragment;
 }
 
-export const Header: React.FC<HeaderProps> = ({post}) => {
+export const Header: React.FC<HeaderProps> = ({ post }) => {
+  const creator = post.creator;
   return (
     <Flex width="100%" padding="16px 0" zIndex={1}>
-        <Flex mr="12px" align="center">
-          <UserIcon src={post.creator.icon} size="32px"/>
-        </Flex>
-        <NameAndDescription />
+      <Flex mr="12px" align="center">
+        <UserIcon
+          src={creator.icon}
+          size="32px"
+          userId={creator.id}
+        />
+      </Flex>
+      <Flex minWidth="68%" align="center">
+          <NextLink href="/user/[id]" as={`/user/${creator.id}`}>
+            <Link className="boldFont">{creator.username}</Link>
+          </NextLink>
+      </Flex>
       <Flex align="center" ml="auto">
-        <NextLink href="/user/[id]" as={`/user/${post.creator.icon}`}>
+        <NextLink href="/user/[id]" as={`/user/${creator.icon}`}>
           <Link fontSize=".5rem">Follow</Link>
         </NextLink>
       </Flex>

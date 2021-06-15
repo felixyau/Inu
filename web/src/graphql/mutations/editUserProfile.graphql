@@ -1,0 +1,8 @@
+mutation EditUserProfile($url:String!, $id:Int!)
+{
+  editUserProfile(url:$url, id:$id)
+  {
+    icon
+    username
+  }
+}

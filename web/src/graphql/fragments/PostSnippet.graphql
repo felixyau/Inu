@@ -16,8 +16,7 @@ fragment PostSnippet on Post {
     text
     id
     commentor {
-      username
-      userId
+      ...CommentorSnippet
     }
   }
 }

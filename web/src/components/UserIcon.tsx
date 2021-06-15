@@ -5,17 +5,20 @@ import NextLink from "next/link";
 interface UserIconProps {
   size: string;
   align?: string;
-  src: string
+  src: string;
+  userId: number;
+
 }
 
 export const UserIcon: React.FC<UserIconProps> = ({
   size,
   align,
   src,
+  userId,
   ...props
 }) => {
   return (
-    <NextLink href="/user/[id]" as={`/user/${1}`}>
+    <NextLink href="/user/[id]" as={`/user/${userId}`}>
       <a>
         <Circle
           size={size}

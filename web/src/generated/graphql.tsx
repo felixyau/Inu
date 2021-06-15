@@ -24,7 +24,7 @@ export type Comments = {
   post: Post;
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
-  commentor?: Maybe<UsernameAndId>;
+  commentor?: Maybe<User>;
 };
 
 export type FieldError = {
@@ -40,6 +40,7 @@ export type Mutation = {
   createPost: PostResponse;
   updatePost: PostResponse;
   deletePost: Scalars['Boolean'];
+  editUserProfile?: Maybe<User>;
   changePassword: UserResponse;
   forgotPassword: Scalars['Boolean'];
   register: UserResponse;
@@ -72,6 +73,12 @@ export type MutationUpdatePostArgs = {
 
 
 export type MutationDeletePostArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationEditUserProfileArgs = {
+  url: Scalars['String'];
   id: Scalars['Int'];
 };
 
@@ -130,6 +137,7 @@ export type Query = {
   posts: PaginatedPost;
   post?: Maybe<Post>;
   users: Array<User>;
+  userProfile?: Maybe<User>;
   me?: Maybe<User>;
 };
 
@@ -141,6 +149,11 @@ export type QueryPostsArgs = {
 
 
 export type QueryPostArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryUserProfileArgs = {
   id: Scalars['Int'];
 };
 
@@ -172,11 +185,10 @@ export type RegisterUserInput = {
   password: Scalars['String'];
 };
 
-export type UsernameAndId = {
-  __typename?: 'usernameAndId';
-  username: Scalars['String'];
-  userId: Scalars['Int'];
-};
+export type CommentorSnippetFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'username' | 'icon'>
+);
 
 export type PostSnippetFragment = (
   { __typename?: 'Post' }
@@ -188,8 +200,8 @@ export type PostSnippetFragment = (
     { __typename?: 'Comments' }
     & Pick<Comments, 'text' | 'id'>
     & { commentor?: Maybe<(
-      { __typename?: 'usernameAndId' }
-      & Pick<UsernameAndId, 'username' | 'userId'>
+      { __typename?: 'User' }
+      & CommentorSnippetFragment
     )> }
   )>> }
 );
@@ -227,8 +239,8 @@ export type AddCommentMutation = (
     { __typename?: 'Comments' }
     & Pick<Comments, 'text'>
     & { commentor?: Maybe<(
-      { __typename?: 'usernameAndId' }
-      & Pick<UsernameAndId, 'userId' | 'username'>
+      { __typename?: 'User' }
+      & CommentorSnippetFragment
     )> }
   )> }
 );
@@ -274,6 +286,20 @@ export type DeletePostMutationVariables = Exact<{
 export type DeletePostMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'deletePost'>
+);
+
+export type EditUserProfileMutationVariables = Exact<{
+  url: Scalars['String'];
+  id: Scalars['Int'];
+}>;
+
+
+export type EditUserProfileMutation = (
+  { __typename?: 'Mutation' }
+  & { editUserProfile?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'icon' | 'username'>
+  )> }
 );
 
 export type ForgotPasswordMutationVariables = Exact<{
@@ -394,6 +420,26 @@ export type PostsQuery = (
   ) }
 );
 
+export type UserProfileQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type UserProfileQuery = (
+  { __typename?: 'Query' }
+  & { userProfile?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'username' | 'icon' | 'id'>
+  )> }
+);
+
+export const CommentorSnippetFragmentDoc = gql`
+    fragment CommentorSnippet on User {
+  id
+  username
+  icon
+}
+    `;
 export const PostSnippetFragmentDoc = gql`
     fragment PostSnippet on Post {
   title
@@ -413,12 +459,11 @@ export const PostSnippetFragmentDoc = gql`
     text
     id
     commentor {
-      username
-      userId
+      ...CommentorSnippet
     }
   }
 }
-    `;
+    ${CommentorSnippetFragmentDoc}`;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
@@ -446,13 +491,12 @@ export const AddCommentDocument = gql`
     mutation AddComment($postId: Int!, $text: String!) {
   addComment(postId: $postId, text: $text) {
     commentor {
-      userId
-      username
+      ...CommentorSnippet
     }
     text
   }
 }
-    `;
+    ${CommentorSnippetFragmentDoc}`;
 export type AddCommentMutationFn = Apollo.MutationFunction<AddCommentMutation, AddCommentMutationVariables>;
 
 /**
@@ -587,6 +631,41 @@ export function useDeletePostMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const EditUserProfileDocument = gql`
+    mutation EditUserProfile($url: String!, $id: Int!) {
+  editUserProfile(url: $url, id: $id) {
+    icon
+    username
+  }
+}
+    `;
+export type EditUserProfileMutationFn = Apollo.MutationFunction<EditUserProfileMutation, EditUserProfileMutationVariables>;
+
+/**
+ * __useEditUserProfileMutation__
+ *
+ * To run a mutation, you first call `useEditUserProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditUserProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editUserProfileMutation, { data, loading, error }] = useEditUserProfileMutation({
+ *   variables: {
+ *      url: // value for 'url'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEditUserProfileMutation(baseOptions?: Apollo.MutationHookOptions<EditUserProfileMutation, EditUserProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditUserProfileMutation, EditUserProfileMutationVariables>(EditUserProfileDocument, options);
+      }
+export type EditUserProfileMutationHookResult = ReturnType<typeof useEditUserProfileMutation>;
+export type EditUserProfileMutationResult = Apollo.MutationResult<EditUserProfileMutation>;
+export type EditUserProfileMutationOptions = Apollo.BaseMutationOptions<EditUserProfileMutation, EditUserProfileMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation forgotPassword($email: String!) {
   forgotPassword(useremail: $email)
@@ -895,3 +974,40 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const UserProfileDocument = gql`
+    query UserProfile($id: Int!) {
+  userProfile(id: $id) {
+    username
+    icon
+    id
+  }
+}
+    `;
+
+/**
+ * __useUserProfileQuery__
+ *
+ * To run a query within a React component, call `useUserProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProfileQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserProfileQuery(baseOptions: Apollo.QueryHookOptions<UserProfileQuery, UserProfileQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, options);
+      }
+export function useUserProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserProfileQuery, UserProfileQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserProfileQuery, UserProfileQueryVariables>(UserProfileDocument, options);
+        }
+export type UserProfileQueryHookResult = ReturnType<typeof useUserProfileQuery>;
+export type UserProfileLazyQueryHookResult = ReturnType<typeof useUserProfileLazyQuery>;
+export type UserProfileQueryResult = Apollo.QueryResult<UserProfileQuery, UserProfileQueryVariables>;

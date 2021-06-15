@@ -27,7 +27,7 @@ import { Header } from "../components/post/Header";
 import { UserInteraction } from "../components/post/UserInteraction";
 import Modal from "react-modal";
 import { Layout } from "../components/Layout";
-import {CloudWidget} from "../components/CloudWidget";
+import { CloudWidget } from "../components/CloudWidget";
 
 Modal.setAppElement("#__next");
 const customStyles = {
@@ -45,7 +45,6 @@ const customStyles = {
 };
 
 const Index = () => {
-  
   const { data, error, loading, fetchMore, variables, updateQuery } =
     usePostsQuery({
       variables: {
@@ -53,7 +52,7 @@ const Index = () => {
         cursor: "",
       },
       notifyOnNetworkStatusChange: true,
-      skip: typeof window === "undefined",
+      // skip: typeof window === "undefined", ??
     });
   const router = useRouter();
 
@@ -85,19 +84,18 @@ const Index = () => {
                   {data!.posts.posts.map((post) => (
                     <Box key={post.id}>
                       <Flex
-                        
                         shadow="md"
                         borderWidth="1px"
                         borderRadius="md"
                         direction="column"
                       >
                         <Box padding="0 16px">
-                        <Header post={post}/>
+                          <Header post={post} />
                         </Box>
                         <PostContent post={post} />
                         <Flex direction="column" p="0 16px">
-                        <PostAction post={post}/>
-                        <UserInteraction post={post} />
+                          <PostAction post={post} />
+                          <UserInteraction post={post} />
                         </Flex>
                       </Flex>
                     </Box>
@@ -129,7 +127,7 @@ const Index = () => {
           </Box>
         </Flex>
       </Flex>
-      </Layout>
+    </Layout>
   );
 };
 

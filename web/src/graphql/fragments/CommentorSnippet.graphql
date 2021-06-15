@@ -1,0 +1,5 @@
+fragment CommentorSnippet on User {
+  id
+  username
+  icon
+}

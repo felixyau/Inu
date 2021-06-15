@@ -45,15 +45,12 @@ let commentsResolver = class commentsResolver {
             const user = yield User_1.User.findOne(comments.userId);
             if (!user)
                 return null;
-            return {
-                username: user.username,
-                userId: user.id
-            };
+            return user;
         });
     }
 };
 __decorate([
-    type_graphql_1.FieldResolver(() => usernameAndId, { nullable: true }),
+    type_graphql_1.FieldResolver(() => User_1.User, { nullable: true }),
     __param(0, type_graphql_1.Root()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Comments_1.Comments]),

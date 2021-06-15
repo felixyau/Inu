@@ -15,13 +15,10 @@ export class usernameAndId {
 @Resolver((of) => Comments)
 export class commentsResolver {
 
-  @FieldResolver(() => usernameAndId, { nullable: true }) 
-  async commentor(@Root() comments: Comments) : Promise<usernameAndId | null>{
+  @FieldResolver(() => User, { nullable: true }) 
+  async commentor(@Root() comments: Comments) : Promise<User | null>{
     const user = await User.findOne(comments.userId);
     if (!user) return null
-    return {
-      username: user.username,
-      userId: user.id
-    }
+    return user;
   }
 }

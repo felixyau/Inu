@@ -1,0 +1,9 @@
+query UserProfile($id:Int!)
+{
+  userProfile(id:$id)
+  {
+    username
+    icon
+    id
+  }
+}

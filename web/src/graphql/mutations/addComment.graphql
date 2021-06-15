@@ -3,8 +3,7 @@ mutation AddComment($postId:Int!, $text:String!) {
   {
     commentor
     {
-      userId
-      username
+      ...CommentorSnippet
     }
     text
   }
