@@ -7,26 +7,24 @@ body {
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
 
+.card {
+  border: 1px solid rgba(238,238,238,1);
+}
+
+.links {
+  color: "#0088cc";
+}
+
 .container {
-  display: flex;
-  flex-direction: column;
+  max-width:935px;
+  width:95%; 
+  padding-top:30px;
+  margin:0 auto;
 }
 
 .navbar-icons > * {
   padding-left: 24px;
 }
-
-/* .commentInput {
-    resize: none;
-    cursor: text;
-    box-shadow: none;
-    outline: none;
-    max-height: 80px;
-    padding: 0;
-    overflow:auto;
-    font-size:14px;
-    line-height: 18px; /*y line-height and overflowauto but not height and overflowauto  
-} */
 
 .commentInput {
   overflow: auto;
@@ -62,6 +60,7 @@ button:disabled {
   border-bottom: 1px solid rgba(238,238,238,1);
   height:calc(100% - 32px);
 }
+
 .commentSession::-webkit-scrollbar { /*Chrome, Safari and Opera*/
     display:none; 
 }
@@ -83,4 +82,38 @@ color:rgba(142,142,142,1);
 
 .smallFont {
   font-size: 10px;
+}
+
+.postSession {
+  width:68%;
+  margin-right:28px;
+  max-width: 635px;
+}
+
+.socialSession {
+  width: 35%;
+}
+
+@media (max-width:935px) {
+  .socialSession {
+    display:none;
+  }
+  .postSession {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+  }
+}
+
+@media (max-width:600px) { /*mobile*/
+  .container {
+    width:100%;
+    padding:0;
+  }
+  .post {
+    border:none;
+  }
+  .commentBox {
+    display: none;
+  }
 }

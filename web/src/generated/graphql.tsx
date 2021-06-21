@@ -125,6 +125,12 @@ export type Post = {
   comments?: Maybe<Array<Comments>>;
 };
 
+
+export type PostCommentsArgs = {
+  duplicateUserComment?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+};
+
 export type PostResponse = {
   __typename?: 'PostResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -213,7 +219,7 @@ export type RegularFieldErrorFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'username'>
+  & Pick<User, 'id' | 'username' | 'icon'>
 );
 
 export type RegularUserResponseFragment = (
@@ -237,7 +243,7 @@ export type AddCommentMutation = (
   { __typename?: 'Mutation' }
   & { addComment?: Maybe<(
     { __typename?: 'Comments' }
-    & Pick<Comments, 'text'>
+    & Pick<Comments, 'text' | 'id'>
     & { commentor?: Maybe<(
       { __typename?: 'User' }
       & CommentorSnippetFragment
@@ -391,6 +397,8 @@ export type MeQuery = (
 
 export type PostQueryVariables = Exact<{
   id: Scalars['Int'];
+  user?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -398,7 +406,18 @@ export type PostQuery = (
   { __typename?: 'Query' }
   & { post?: Maybe<(
     { __typename?: 'Post' }
-    & PostSnippetFragment
+    & Pick<Post, 'title' | 'id' | 'createdAt' | 'updatedAt' | 'points' | 'voteStatus' | 'text' | 'photo'>
+    & { creator: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username' | 'icon'>
+    ), comments?: Maybe<Array<(
+      { __typename?: 'Comments' }
+      & Pick<Comments, 'text' | 'id'>
+      & { commentor?: Maybe<(
+        { __typename?: 'User' }
+        & CommentorSnippetFragment
+      )> }
+    )>> }
   )> }
 );
 
@@ -429,7 +448,7 @@ export type UserProfileQuery = (
   { __typename?: 'Query' }
   & { userProfile?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'username' | 'icon' | 'id'>
+    & RegularUserFragment
   )> }
 );
 
@@ -468,6 +487,7 @@ export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
   username
+  icon
 }
     `;
 export const RegularFieldErrorFragmentDoc = gql`
@@ -494,6 +514,7 @@ export const AddCommentDocument = gql`
       ...CommentorSnippet
     }
     text
+    id
   }
 }
     ${CommentorSnippetFragmentDoc}`;
@@ -901,12 +922,31 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const PostDocument = gql`
-    query Post($id: Int!) {
+    query Post($id: Int!, $user: Int, $limit: Int) {
   post(id: $id) {
-    ...PostSnippet
+    title
+    id
+    createdAt
+    updatedAt
+    points
+    voteStatus
+    text
+    photo
+    creator {
+      id
+      username
+      icon
+    }
+    comments(duplicateUserComment: $user, limit: $limit) {
+      text
+      id
+      commentor {
+        ...CommentorSnippet
+      }
+    }
   }
 }
-    ${PostSnippetFragmentDoc}`;
+    ${CommentorSnippetFragmentDoc}`;
 
 /**
  * __usePostQuery__
@@ -921,6 +961,8 @@ export const PostDocument = gql`
  * const { data, loading, error } = usePostQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      user: // value for 'user'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
@@ -977,12 +1019,10 @@ export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariable
 export const UserProfileDocument = gql`
     query UserProfile($id: Int!) {
   userProfile(id: $id) {
-    username
-    icon
-    id
+    ...RegularUser
   }
 }
-    `;
+    ${RegularUserFragmentDoc}`;
 
 /**
  * __useUserProfileQuery__

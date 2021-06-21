@@ -8,36 +8,37 @@ import {
   Input,
 } from "@chakra-ui/react";
 
-type InputFieldProps =
-  | FieldHookConfig<any> & {
-      //name: string;  y doesnt' need
-      label: string;
-      //placeholder: string; y doesnt' need
-      textarea?: boolean;
-    };
+interface InputFieldProps {
+  label: string;
+  textarea?: boolean;
+  name:string;
+  placeholder?:string;
+  type?:string;
+}
 
 export const InputField: React.FC<InputFieldProps> = ({
+  label,
   textarea,
   ...props
 }) => {
-  const [field, { error }] = useField(props);
+  const [field, meta] = useField(props);
   return (
-    <FormControl isInvalid={!!error}>
-      <FormLabel htmlFor={field.name}>{props.label}</FormLabel>
-      {textarea ? (
+    <FormControl isInvalid={meta.error && meta.touched}>
+      <FormLabel htmlFor={field.name}>{label}</FormLabel>
+      {!!textarea ? (
         <Textarea
           {...field}
-          type={props.type}
-          placeholder={props.placeholder}
+          {...props}
+          id={props.name}
         ></Textarea>
       ) : (
         <Input
           {...field}
-          type={props.type}
-          placeholder={props.placeholder}
+          {...props}
+          id={props.name}
         ></Input>
       )}
-      {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
+      {meta.error? <FormErrorMessage>{meta.error}</FormErrorMessage> : null}
     </FormControl>
   );
 };

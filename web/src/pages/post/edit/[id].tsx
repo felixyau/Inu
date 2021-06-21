@@ -14,7 +14,7 @@ import {
 import { createUrqClient } from "../../../utilities/CreateUqrlClient";
 import { errorMaps } from "../../../utilities/errorMap";
 import { getIntId } from "../../../utilities/getIntId";
-import { withApollo } from "../../../utilities/withApollo";
+import withApollo from "../../../utilities/withApollo";
 
 const EditPost: React.FC = ({}) => {
   const intId = getIntId();
@@ -36,12 +36,12 @@ const EditPost: React.FC = ({}) => {
   if (!data?.post) return <div>couldn't find the post</div>;
 
   return !meLoading && !meData?.me ? (
-    <Layout variant="small">
+    <Layout>
       <Box>You need to login before you create a post</Box>
       <NextLink href="./login?next=create-post">login</NextLink>
     </Layout>
   ) : (
-    <Layout variant="small">
+    <Layout>
       <Formik
         initialValues={{ title: data.post.title, text: data.post.text }}
         onSubmit={async (values, { setErrors }) => {

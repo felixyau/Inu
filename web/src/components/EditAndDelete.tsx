@@ -9,7 +9,7 @@ import {
   User,
 } from "../generated/graphql";
 
-interface postActionProps {
+interface EditDeleteProps {
   post: Pick<
     Post,
     | "title"
@@ -23,7 +23,7 @@ interface postActionProps {
   creator: Pick<User, "id" | "username">;
 }
 
-export const PostAction: React.FC<postActionProps> = ({ creator, post }) => {
+export const EditDelete: React.FC<EditDeleteProps> = ({ creator, post }) => {
   const { data: meData } = useMeQuery();
   const [deletePost] = useDeletePostMutation();
   return (

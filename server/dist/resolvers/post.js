@@ -76,9 +76,16 @@ PostResponse = __decorate([
     type_graphql_1.ObjectType()
 ], PostResponse);
 let postResolver = class postResolver {
-    comments(post) {
+    comments(post, limit, duplicateUserComment) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comments = yield Comments_1.Comments.find({ postId: post.id });
+            const comments = yield typeorm_1.getConnection().query(`
+      SELECT c.*
+      FROM comments c
+      WHERE c."postId" = ${post.id} 
+      ${duplicateUserComment ? `WHERE c."userId" <> ${duplicateUserComment} ` : ""}
+      ORDER BY c."createdAt" DESC
+      ${limit ? `limit ${limit}` : ""}
+      `);
             if (!comments)
                 return null;
             return comments;
@@ -251,8 +258,10 @@ let postResolver = class postResolver {
 __decorate([
     type_graphql_1.FieldResolver(() => [Comments_1.Comments], { nullable: true }),
     __param(0, type_graphql_1.Root()),
+    __param(1, type_graphql_1.Arg("limit", () => type_graphql_1.Int, { nullable: true })),
+    __param(2, type_graphql_1.Arg("duplicateUserComment", () => type_graphql_1.Int, { nullable: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Posts_1.Post]),
+    __metadata("design:paramtypes", [Posts_1.Post, Number, Number]),
     __metadata("design:returntype", Promise)
 ], postResolver.prototype, "comments", null);
 __decorate([

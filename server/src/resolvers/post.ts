@@ -56,9 +56,19 @@ class PostResponse {
 export class postResolver {
   @FieldResolver(()=>[Comments], {nullable:true})
   async comments(
-    @Root() post:Post
+    @Root() post:Post,
+    @Arg("limit", () => Int, {nullable:true}) limit: number,
+    @Arg("duplicateUserComment", () => Int, {nullable:true}) duplicateUserComment: number,
     ) {
-      const comments = await Comments.find({postId : post.id})
+      const comments = await getConnection().query(
+      `
+      SELECT c.*
+      FROM comments c
+      WHERE c."postId" = ${post.id} 
+      ${duplicateUserComment ? `WHERE c."userId" <> ${duplicateUserComment} ` : ""}
+      ORDER BY c."createdAt" DESC
+      ${limit? `limit ${limit}` : ""}
+      `);
       if (!comments) return null;
       return comments
     }

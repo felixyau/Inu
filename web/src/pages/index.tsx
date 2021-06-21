@@ -10,6 +10,7 @@ import {
   Spacer,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import React, { useEffect, useState } from "react";
@@ -17,34 +18,24 @@ import { Navbar } from "../components/Navbar";
 import { PostAction } from "../components/post/PostAction";
 import { PostContent } from "../components/post/postContent";
 import { UpdootSession } from "../components/UpdootSession";
-import { PostQuery, usePostsQuery } from "../generated/graphql";
-import { withApollo } from "../utilities/withApollo";
+import { PostQuery, useMeQuery, usePostsQuery, useUserProfileQuery } from "../generated/graphql";
+import withApollo from "../utilities/withApollo";
 import { HiOutlineAnnotation } from "react-icons/hi";
 import { useRouter } from "next/router";
 import { UserAndChangeAcc } from "../components/userAndChangeAcc";
 import { SuggestedUser } from "../components/SuggestedUser";
 import { Header } from "../components/post/Header";
 import { UserInteraction } from "../components/post/UserInteraction";
-import Modal from "react-modal";
 import { Layout } from "../components/Layout";
 import { CloudWidget } from "../components/CloudWidget";
+import { Login } from "../components/Login";
+import { IndexModal } from "../components/IndexModal";
 
-Modal.setAppElement("#__next");
-const customStyles = {
-  content: {
-    width: "60%",
-    position: "relative",
-  },
-  overlay: {
-    zIndex: 1000,
-    backgroundColor: "rgba(0,0,0,.5)",
-    // display: "flex",
-    // flexDirection: "column",
-    // justifyContent: "center"
-  },
-};
-
+// const userContext = React.createContext(userData.userProfile);
 const Index = () => {
+  const {data:meData, error:meError, loading:meLoading} = useMeQuery();
+  const router = useRouter();
+  const { data:userData,loading:userLoading, error:userError } = useUserProfileQuery({ variables: { id: meData?.me?.id }});
   const { data, error, loading, fetchMore, variables, updateQuery } =
     usePostsQuery({
       variables: {
@@ -54,39 +45,48 @@ const Index = () => {
       notifyOnNetworkStatusChange: true,
       // skip: typeof window === "undefined", ??
     });
-  const router = useRouter();
-
+  
+  if (userError) console.log("userError:", JSON.stringify(userError, null, 2));
+  
   if (!loading && !data) {
     return (
       <div>
         <div>you got query failed for some reason</div>
-        <div>{error?.message}</div>
+        <div>{JSON.stringify(error, null, 2)}</div>
       </div>
     );
   }
+
+  // if (!userLoading && !userData) {
+  //   return (
+  //     <div>
+  //       <div>you got query failed for some reason</div>
+  //       <div>{error?.message}</div>
+  //     </div>
+  //   );
+  // }
   return (
+    !meData?.me && false ? <Login/> : (
     <Layout>
-      <Modal
+      {/* <Modal
         isOpen={!!router.query.id}
         onRequestClose={() => router.back()}
         className=""
       >
         <Flex>Hi</Flex>
-      </Modal>
+      </Modal> */}
       <Flex>
-        <Flex maxWidth="935px" width="95%" pt="30px" m="0 auto">
-          <Box className="container" width="68%" mr="28px">
-            {!data && loading ? (
+        <Flex className="container">
+          <Flex className="postSession">
+            {(!data && loading)? (
               <Box>Loading...</Box>
             ) : (
               <>
-                <Stack spacing="60px" padding={0}>
+                <Stack className="postStack" spacing={{base:"10px", lg:"60px"}} padding={0}>
                   {data!.posts.posts.map((post) => (
                     <Box key={post.id}>
                       <Flex
-                        shadow="md"
-                        borderWidth="1px"
-                        borderRadius="md"
+                        className="card"
                         direction="column"
                       >
                         <Box padding="0 16px">
@@ -120,14 +120,14 @@ const Index = () => {
                 </Button>
               </>
             )}
-          </Box>
-          <Box width="35%">
-            <UserAndChangeAcc />
-            <SuggestedUser />
+          </Flex>
+          <Box className="socialSession">
+            <UserAndChangeAcc user={userData?.userProfile}/>
+            <SuggestedUser user={userData?.userProfile}/>
           </Box>
         </Flex>
       </Flex>
-    </Layout>
+    </Layout>)
   );
 };
 

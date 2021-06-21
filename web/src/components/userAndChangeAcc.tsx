@@ -3,33 +3,27 @@ import React from "react";
 import NextLink from "next/link";
 import { UserIcon } from "./UserIcon";
 import { NameAndDescription } from "./NameAndDescription";
-import { useMeQuery, useUserProfileQuery } from "../generated/graphql";
+import { useMeQuery, User, useUserProfileQuery } from "../generated/graphql";
 
-interface UserAndChangeAccProps {}
+interface UserAndChangeAccProps {
+  user: Pick<User, "id" | "username" | "icon">
 
-export const UserAndChangeAcc: React.FC<UserAndChangeAccProps> = () => {
-  const {data:meData,loading} = useMeQuery();
-  if(loading) return <div>...loading</div>
-  if(!meData) return <div>please log in</div>
-  // if(!meData.me) return <div>please log in</div>
-  const {data} = useUserProfileQuery({variables:{id:meData.me.id}, skip:!meData});
-  
+}
+
+export const UserAndChangeAcc: React.FC<UserAndChangeAccProps> = ({user}) => {
   return (
     <Flex width="100%" m="18px 0 12px">
       <Box mr="12px">
-        {
-          data ?
-          <UserIcon size="60px" src={data.userProfile.icon} userId={data.userProfile.id}/>
-          : 
-          <div>Pleas Login</div>
-        }
-      
+
+          <UserIcon
+            size="60px"
+            src={user?.icon}
+            userId={user?.id}
+          />
       </Box>
-      <NameAndDescription />
+      <NameAndDescription user={user}/>
       <Flex align="center">
-
-          <Link fontSize=".5rem">Change</Link>
-
+        <Link fontSize=".5rem">Change</Link>
       </Flex>
     </Flex>
   );

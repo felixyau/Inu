@@ -9,7 +9,7 @@ import { Wrapper, WrapperVariant } from "./Wrapper";
 
 export const Layout: React.FC = ({ children }) => {
   return (
-    <Flex className="container">
+    <Flex direction="column">
       <Navbar />
       {children}
     </Flex>

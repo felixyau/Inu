@@ -1,7 +1,24 @@
-query Post($id:Int!)
-{
-  post(id:$id)
-  {
-    ...PostSnippet
+query Post($id: Int!, $user: Int, $limit: Int) {
+  post(id: $id) {
+    title
+  id
+  createdAt
+  updatedAt
+  points
+  voteStatus
+  text
+  photo
+  creator {
+    id
+    username
+    icon
+  }
+  comments(duplicateUserComment:$user, limit:$limit) {
+    text
+    id
+    commentor {
+      ...CommentorSnippet
+    }
+  }
   }
 }

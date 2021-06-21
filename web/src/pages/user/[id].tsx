@@ -7,7 +7,7 @@ import {
   usePostQuery,
 } from "../../generated/graphql";
 import { getUserFromUrl } from "../../utilities/getUserFromUrl";
-import { withApollo } from "../../utilities/withApollo";
+import withApollo from "../../utilities/withApollo";
 import { ProfileWidget } from "../../components/ProfileWidget";
 import { Layout } from "../../components/Layout";
 

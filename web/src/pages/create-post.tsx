@@ -10,7 +10,7 @@ import { Layout } from "../components/Layout";
 import { useCreatePostMutation, useMeQuery } from "../generated/graphql";
 import { createUrqClient } from "../utilities/CreateUqrlClient";
 import { errorMaps } from "../utilities/errorMap";
-import { withApollo } from "../utilities/withApollo";
+import withApollo from "../utilities/withApollo";
 
 export const CreatePost: React.FC = () => {
 
@@ -19,7 +19,7 @@ export const CreatePost: React.FC = () => {
   return !loading && !data?.me ? (
     <Layout>
       <Box >You need to login before you create a post</Box>
-      <NextLink href="./login?next=create-post"><Link onClick={()=>console.log("click")}style={{ color: "#0088cc" }}>login here</Link></NextLink>
+      <NextLink href="./login?next=create-post"><Link onClick={()=>console.log("click")} className="links">login here</Link></NextLink>
     </Layout>
   ) : (
     <Layout>

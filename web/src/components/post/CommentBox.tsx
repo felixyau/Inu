@@ -16,6 +16,7 @@ const updateAfterAddComment = (
   post: PostSnippetFragment,
   commentData: comments
 ) => {
+
   const data = cache.readFragment<{
     id: number;
     comments: comments[];
@@ -24,14 +25,24 @@ const updateAfterAddComment = (
     fragment: gql`
       fragment _ on Post {
         id
-        comments
+        comments {
+          id
+          text
+          commentor {
+            id
+            username
+            icon
+          }
+        }
       }
     `,
   });
+  console.log("Data:", data);
+  
 
   let realData: comments[];
   realData = [...data!.comments, commentData]; //assume incorrect postId is the only case that fragment is not in cache and so data return null
-
+  console.log("reakDatq:", realData)
   cache.writeFragment({
     id: "Post:" + post.id,
     fragment: gql`

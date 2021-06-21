@@ -71,7 +71,7 @@ export const HeartIcon: React.FC<HeartIconProps> = ({ post }) => {
           update: (cache) => updateAfterVote(cache, post),
         });
     if (errors) console.log("heart errors");}
-    if (!!meData?.me) {console.log("how"); return voting();}
+    if (!!meData?.me) return voting();
     return router.push("/login")
   };
   return (

@@ -6,5 +6,6 @@ mutation AddComment($postId:Int!, $text:String!) {
       ...CommentorSnippet
     }
     text
+    id
   }
 }
