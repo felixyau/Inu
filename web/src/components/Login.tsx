@@ -18,7 +18,8 @@ export const Login: React.FC = () => {
         onSubmit={async (values, { setErrors }) => {
           const response = await login({
             variables: values,
-            update: (cache) => cache.evict({ fieldName: "me" }),
+            update: (cache) => {cache.evict({ fieldName: "me" }); cache.gc();},
+            
           });
           if (response.data?.login.errors) {
             setErrors(errorMaps(response.data.login.errors));

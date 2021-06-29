@@ -7,6 +7,7 @@ import { useUserContext } from "../../../components/UserWrapper";
 import { useMeQuery, useUserProfileQuery } from "../../../generated/graphql";
 import { HeartIcon } from "../../../Icons/HeartIcon";
 import { getPostFromUrl } from "../../../utilities/getPostFromUrl";
+import withApollo from "../../../utilities/withApollo";
 
 const Comments: React.FC = () => {
   const { data, loading, error } = getPostFromUrl();
@@ -41,4 +42,4 @@ const Comments: React.FC = () => {
   );
 };
 
-export default Comments;
+export default withApollo({ssr:true})(Comments);

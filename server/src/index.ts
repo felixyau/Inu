@@ -7,31 +7,28 @@
 5. I can see password from network request now, is it the case in production only?
 6. How server side rendering work, how next do it, how is server work? urql request 
 */
+import { ApolloServer } from "apollo-server-express";
+import connectRedis from "connect-redis";
+import cors from "cors";
+import "dotenv-safe/config";
+import express from "express";
+import session from "express-session";
+import Redis from "ioredis";
+import path from "path";
 import "reflect-metadata";
+import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { COOKIE_NAME, __prod__ } from "./constant";
+import { Comments } from "./entities/Comments";
 import { Post } from "./entities/Posts";
-require("dotenv").config();
-import express from "express";
-import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
+import { Updoot } from "./entities/Updoot";
+import { User } from "./entities/User";
+import { commentsResolver } from "./resolvers/comments";
 import { helloResolver } from "./resolvers/hello";
 import { postResolver } from "./resolvers/post";
-import { User } from "./entities/User";
 import { userResolver } from "./resolvers/user";
-import path from "path";
-
-import Redis from "ioredis"
-import session from "express-session";
-import connectRedis from "connect-redis";
-
-import cors from "cors";
-import { sendEmails } from "./utilities/sendEmails";
-import { Updoot } from "./entities/Updoot";
-import { CreateUserLoader } from "./utilities/createUserLoader";
 import { CreateUpdootLoader } from "./utilities/createUpdootLoader";
-import { Comments } from "./entities/Comments";
-import { commentsResolver } from "./resolvers/comments";
+import { CreateUserLoader } from "./utilities/createUserLoader";
 
 declare module "express-session" {
   export interface SessionData {
@@ -43,26 +40,32 @@ const main = async () => {
   //sendEmails("bob@b.com","hi");
   const connection = await createConnection({
     type: "postgres",
-    database: "postgres",
-    logging: true,
-    password: "mysql",
-    host: "localhost",
-    port: 5432,
-    username: "postgres",
-    //synchronize: true,
-    migrations: [path.join(__dirname, "./migrations/*")],
+    url:process.env.DATABASE_URL,
+    logging: false,
+    //synchronize: __prod__ ? false : true,
+    migrations: [path.join(__dirname, "./migrations/*.ts")], //dist/migrations/*.js
     entities: [Post, User, Updoot, Comments],
+    ssl: __prod__ ? {
+      rejectUnauthorized:false,
+    } : false,
   });
+
+  //await connection.runMigrations();
   //await Post.delete({});
+
   const app = express();
+
+  const RedisStore = connectRedis(session);
+  const redis = new Redis(process.env.REDIS_URL);
+
+  app.set("trust proxy",1); //what does this do
+
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
-  const RedisStore = connectRedis(session);
-  const redis = new Redis();
 
   app.use(
     session({
@@ -70,17 +73,18 @@ const main = async () => {
       store: new RedisStore({
         client: redis,
         disableTouch: true,
-        host: "localhost",
-        port: 6379,
+        // host: "localhost", removed on production
+        // port: 6379,
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10years
         httpOnly: true,
         sameSite: "lax",
         secure: __prod__, //cookies only work in https
+        //domain: __prod__? ".heroku.com" : undefined,
       },
       saveUninitialized: false,
-      secret: "keyboard cat", //encrypt later
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
   );
@@ -90,6 +94,8 @@ const main = async () => {
       resolvers: [helloResolver, postResolver, userResolver, commentsResolver],
       validate: false,
     }),
+    playground:true,
+    introspection:true,
     context: ({ req, res }) => ({
       em: connection.manager,
       req,
@@ -106,9 +112,13 @@ const main = async () => {
     res.send("hi");
   });
 
-  app.listen(4000, () => {
+  const port = parseInt(process.env.PORT) || 4000;
+
+  app.listen(port, () => {
     console.log("server running on port 4000");
   });
 };
 
-main();
+main().catch((err) => {
+  console.error("err:",err);
+});

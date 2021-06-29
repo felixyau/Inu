@@ -4,6 +4,7 @@ import NextLink from "next/link";
 import { NameAndDescription } from "../NameAndDescription";
 import { UserIcon } from "../UserIcon";
 import { PostSnippetFragment } from "../../generated/graphql";
+import { EditDelete } from "../EditAndDelete";
 
 interface HeaderProps {
   post: PostSnippetFragment;
@@ -25,6 +26,7 @@ export const Header: React.FC<HeaderProps> = ({ post }) => {
             <Link className="boldFont">{creator.username}</Link>
           </NextLink>
       </Flex>
+      <EditDelete post={post} creator={post.creator}/>
       <Flex align="center" ml="auto">
         <NextLink href="/user/[id]" as={`/user/${creator.icon}`}>
           <Link fontSize=".5rem">Follow</Link>

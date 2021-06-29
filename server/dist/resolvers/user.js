@@ -25,15 +25,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userResolver = void 0;
-const User_1 = require("../entities/User");
-const type_graphql_1 = require("type-graphql");
 const argon2_1 = __importDefault(require("argon2"));
-const constant_1 = require("../constant");
-const validateUserInput_1 = require("../utilities/validateUserInput");
-const registerUserInput_1 = require("./registerUserInput");
-const Error_1 = require("./Error");
+const type_graphql_1 = require("type-graphql");
 const uuid_1 = require("uuid");
+const constant_1 = require("../constant");
+const User_1 = require("../entities/User");
 const sendEmails_1 = require("../utilities/sendEmails");
+const validateUserInput_1 = require("../utilities/validateUserInput");
+const Error_1 = require("./Error");
+const registerUserInput_1 = require("./registerUserInput");
 let UserResponse = class UserResponse {
 };
 __decorate([
@@ -226,7 +226,8 @@ let userResolver = class userResolver {
 };
 __decorate([
     type_graphql_1.FieldResolver(() => String),
-    __param(0, type_graphql_1.Ctx()), __param(1, type_graphql_1.Root()),
+    __param(0, type_graphql_1.Ctx()),
+    __param(1, type_graphql_1.Root()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, User_1.User]),
     __metadata("design:returntype", void 0)
@@ -301,7 +302,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], userResolver.prototype, "logout", null);
 userResolver = __decorate([
-    type_graphql_1.Resolver((of) => User_1.User)
+    type_graphql_1.Resolver(User_1.User)
 ], userResolver);
 exports.userResolver = userResolver;
 //# sourceMappingURL=user.js.map

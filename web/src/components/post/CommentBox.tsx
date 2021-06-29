@@ -25,24 +25,23 @@ const updateAfterAddComment = (
     fragment: gql`
       fragment _ on Post {
         id
-        comments {
-          id
-          text
-          commentor {
-            id
-            username
-            icon
-          }
-        }
+        comments
+        # comments {
+        #   id
+        #   text
+        #   commentor {
+        #     id
+        #     username
+        #     icon
+        #   }
+        # }
       }
     `,
   });
-  console.log("Data:", data);
-  
+  console.log("data:", data)
 
   let realData: comments[];
   realData = [...data!.comments, commentData]; //assume incorrect postId is the only case that fragment is not in cache and so data return null
-  console.log("reakDatq:", realData)
   cache.writeFragment({
     id: "Post:" + post.id,
     fragment: gql`
@@ -108,7 +107,6 @@ export const CommentBox: React.FC<CommentBoxProps> = ({ post }) => {
             }}
           >
             <Box p="8px 16px 8px 0">
-              {" "}
               <Circle size="40px" bg="white" color="white">
                 <Image
                   objectFit="cover"

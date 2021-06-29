@@ -1,4 +1,4 @@
-import { Field, FieldResolver, Int, ObjectType, Query, Resolver, Root } from "type-graphql";
+import { Field, FieldResolver, Int, ObjectType, Resolver, Root } from "type-graphql";
 import { Comments } from "../entities/Comments";
 import { User } from "../entities/User";
 
@@ -12,7 +12,7 @@ export class usernameAndId {
 }
 
 @ObjectType()
-@Resolver((of) => Comments)
+@Resolver(Comments)
 export class commentsResolver {
 
   @FieldResolver(() => User, { nullable: true }) 

@@ -3,7 +3,7 @@ import React from "react";
 import NextLink from "next/link";
 import { UserIcon } from "./UserIcon";
 import { NameAndDescription } from "./NameAndDescription";
-import { useMeQuery, User, useUserProfileQuery } from "../generated/graphql";
+import { User } from "../generated/graphql";
 
 interface UserAndChangeAccProps {
   user: Pick<User, "id" | "username" | "icon">

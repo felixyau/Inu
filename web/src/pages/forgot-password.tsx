@@ -13,7 +13,7 @@ import {
 import { createUrqClient } from "../utilities/CreateUqrlClient";
 import { errorMaps } from "../utilities/errorMap";
 import NextLink from "next/link";
-import { withApollo } from "../utilities/withApollo";
+import withApollo from "../utilities/withApollo";
 
 const ForgotPassword: React.FC = ({}) => {
   const [forgotPassword] = useForgotPasswordMutation();

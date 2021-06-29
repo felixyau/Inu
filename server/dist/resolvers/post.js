@@ -22,15 +22,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postResolver = exports.PaginatedPost = void 0;
-const Posts_1 = require("../entities/Posts");
 const type_graphql_1 = require("type-graphql");
-const isAuth_1 = require("../middleware/isAuth");
 const typeorm_1 = require("typeorm");
-const Updoot_1 = require("../entities/Updoot");
-const Error_1 = require("./Error");
-const User_1 = require("../entities/User");
 const Comments_1 = require("../entities/Comments");
+const Posts_1 = require("../entities/Posts");
+const Updoot_1 = require("../entities/Updoot");
+const User_1 = require("../entities/User");
+const isAuth_1 = require("../middleware/isAuth");
 const tryCatchHell_1 = require("../utilities/tryCatchHell");
+const Error_1 = require("./Error");
 let postInput = class postInput {
 };
 __decorate([
@@ -106,7 +106,7 @@ let postResolver = class postResolver {
             return !!updoot;
         });
     }
-    posts(limit, cursor, { req }) {
+    posts(limit, cursor) {
         return __awaiter(this, void 0, void 0, function* () {
             const reallimit = Math.min(50, limit);
             const reallimitPlusOne = reallimit + 1;
@@ -132,7 +132,7 @@ let postResolver = class postResolver {
     }
     addComment(text, postId, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const [data, error] = yield tryCatchHell_1.tryCatchHell(Posts_1.Post.findOne(postId));
+            const [_, error] = yield tryCatchHell_1.tryCatchHell(Posts_1.Post.findOne(postId));
             if (error)
                 return null;
             const comment = yield Comments_1.Comments.create({
@@ -246,6 +246,7 @@ let postResolver = class postResolver {
             const post = yield Posts_1.Post.findOne(id);
             if (!post)
                 return false;
+            yield Comments_1.Comments.delete({ postId: id });
             const userId = req.session.userId;
             if (post.creatorId !== userId)
                 return false;
@@ -266,7 +267,8 @@ __decorate([
 ], postResolver.prototype, "comments", null);
 __decorate([
     type_graphql_1.FieldResolver(() => User_1.User),
-    __param(0, type_graphql_1.Root()), __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Root()),
+    __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Posts_1.Post, Object]),
     __metadata("design:returntype", void 0)
@@ -283,9 +285,8 @@ __decorate([
     type_graphql_1.Query(() => PaginatedPost),
     __param(0, type_graphql_1.Arg("limit", () => type_graphql_1.Int)),
     __param(1, type_graphql_1.Arg("cursor", () => String, { nullable: true })),
-    __param(2, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object, Object]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], postResolver.prototype, "posts", null);
 __decorate([
@@ -343,7 +344,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], postResolver.prototype, "deletePost", null);
 postResolver = __decorate([
-    type_graphql_1.Resolver((of) => Posts_1.Post)
+    type_graphql_1.Resolver(Posts_1.Post)
 ], postResolver);
 exports.postResolver = postResolver;
 //# sourceMappingURL=post.js.map

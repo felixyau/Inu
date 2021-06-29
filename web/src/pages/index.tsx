@@ -35,7 +35,6 @@ import { IndexModal } from "../components/IndexModal";
 const Index = () => {
   const {data:meData, error:meError, loading:meLoading} = useMeQuery();
   const router = useRouter();
-  const { data:userData,loading:userLoading, error:userError } = useUserProfileQuery({ variables: { id: meData?.me?.id }});
   const { data, error, loading, fetchMore, variables, updateQuery } =
     usePostsQuery({
       variables: {
@@ -46,8 +45,6 @@ const Index = () => {
       // skip: typeof window === "undefined", ??
     });
   
-  if (userError) console.log("userError:", JSON.stringify(userError, null, 2));
-  
   if (!loading && !data) {
     return (
       <div>
@@ -57,16 +54,16 @@ const Index = () => {
     );
   }
 
-  // if (!userLoading && !userData) {
-  //   return (
-  //     <div>
-  //       <div>you got query failed for some reason</div>
-  //       <div>{error?.message}</div>
-  //     </div>
-  //   );
-  // }
+  if (!meLoading && !meData) {
+    return (
+      <div>
+        <div>error</div>
+        <div>{error?.message}</div>
+      </div>
+    );
+  }
   return (
-    !meData?.me && false ? <Login/> : (
+    !meData?.me ? <Login/> : (
     <Layout>
       {/* <Modal
         isOpen={!!router.query.id}
@@ -122,8 +119,8 @@ const Index = () => {
             )}
           </Flex>
           <Box className="socialSession">
-            <UserAndChangeAcc user={userData?.userProfile}/>
-            <SuggestedUser user={userData?.userProfile}/>
+            <UserAndChangeAcc user={meData.me}/>
+            <SuggestedUser user={meData.me}/>
           </Box>
         </Flex>
       </Flex>

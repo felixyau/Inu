@@ -1,9 +1,6 @@
-import { User } from "../entities/User";
-import { MyContext } from "../types";
+import argon2 from "argon2";
 import {
-  Arg,
-  Args,
-  Ctx,
+  Arg, Ctx,
   Field,
   FieldResolver,
   Int,
@@ -11,16 +8,16 @@ import {
   ObjectType,
   Query,
   Resolver,
-  Root,
+  Root
 } from "type-graphql";
-import argon2 from "argon2";
-import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constant";
-import { validateUserName } from "../utilities/validateUserInput";
-import { registerUserInput } from "./registerUserInput";
-import { FieldError } from "./Error";
 import { v4 } from "uuid";
+import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constant";
+import { User } from "../entities/User";
+import { MyContext } from "../types";
 import { sendEmails } from "../utilities/sendEmails";
-import { tryCatchHell } from "../utilities/tryCatchHell";
+import { validateUserName } from "../utilities/validateUserInput";
+import { FieldError } from "./Error";
+import { registerUserInput } from "./registerUserInput";
 
 
 // interface trycatchHellType {
@@ -36,7 +33,7 @@ class UserResponse {
   user?: User;
 }
 
-@Resolver((of) => User)
+@Resolver(User)
 export class userResolver {
   @FieldResolver(() => String)
   email(@Ctx() { req }: MyContext, @Root() user: User) {

@@ -58,7 +58,7 @@ __decorate([
 ], commentsResolver.prototype, "commentor", null);
 commentsResolver = __decorate([
     type_graphql_1.ObjectType(),
-    type_graphql_1.Resolver((of) => Comments_1.Comments)
+    type_graphql_1.Resolver(Comments_1.Comments)
 ], commentsResolver);
 exports.commentsResolver = commentsResolver;
 //# sourceMappingURL=comments.js.map

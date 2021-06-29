@@ -1,5 +1,3 @@
-import { Post } from "../entities/Posts";
-import { MyContext } from "../types";
 import {
   Arg,
   Ctx,
@@ -12,15 +10,17 @@ import {
   Query,
   Resolver,
   Root,
-  UseMiddleware,
+  UseMiddleware
 } from "type-graphql";
-import { isAuth } from "../middleware/isAuth";
 import { getConnection } from "typeorm";
-import { Updoot } from "../entities/Updoot";
-import { FieldError } from "./Error";
-import { User } from "../entities/User";
 import { Comments } from "../entities/Comments";
+import { Post } from "../entities/Posts";
+import { Updoot } from "../entities/Updoot";
+import { User } from "../entities/User";
+import { isAuth } from "../middleware/isAuth";
+import { MyContext } from "../types";
 import { tryCatchHell } from "../utilities/tryCatchHell";
+import { FieldError } from "./Error";
 
 @InputType()
 class postInput {
@@ -52,7 +52,7 @@ class PostResponse {
   post?: Post;
 }
 
-@Resolver((of) => Post)
+@Resolver(Post)
 export class postResolver {
   @FieldResolver(()=>[Comments], {nullable:true})
   async comments(
@@ -96,7 +96,6 @@ export class postResolver {
   async posts(
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
-    @Ctx() { req }: MyContext
   ): Promise<PaginatedPost> {
     const reallimit = Math.min(50, limit);
     const reallimitPlusOne = reallimit + 1;
@@ -106,7 +105,6 @@ export class postResolver {
       replacements.push([new Date(parseInt(cursor))]);
     }
 
-    //bro
     const posts = await getConnection().query(
       ` 
       SELECT p.*
@@ -152,7 +150,7 @@ export class postResolver {
     @Arg("postId", ()=>Int) postId: number,
     @Ctx() { req }: MyContext
   ) : Promise<Comments | null> {
-    const [data,error] = await tryCatchHell(Post.findOne(postId))
+    const [_,error] = await tryCatchHell(Post.findOne(postId))
     if (error) return null;
 
     const comment = await Comments.create({
@@ -345,6 +343,8 @@ export class postResolver {
   ): Promise<Boolean> {
     const post = await Post.findOne(id);
     if (!post) return false;
+    //const comments = await Comments.find({postId:id});
+    await Comments.delete({postId:id});
     const userId = req.session.userId;
     if (post.creatorId !== userId) return false;
     await Updoot.delete({ postId: id });

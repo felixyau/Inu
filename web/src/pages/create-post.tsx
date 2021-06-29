@@ -28,7 +28,8 @@ export const CreatePost: React.FC = () => {
         onSubmit={async (values, { setErrors }) => {
           const { errors, data } = await createPost({
             variables: { input: values },
-            update: (cache) => cache.evict({fieldName:"posts"})
+            update: (cache) => {cache.evict({fieldName:"posts"}); cache.gc();}
+            
           });
           if (data?.createPost.errors)
             setErrors(errorMaps(data.createPost.errors));

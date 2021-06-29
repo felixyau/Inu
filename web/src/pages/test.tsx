@@ -1,6 +1,6 @@
 import { PostAction } from "../components/post/PostAction";
 import { usePostQuery, usePostsQuery } from "../generated/graphql";
-import { withApollo } from "../utilities/withApollo";
+import withApollo from "../utilities/withApollo";
 
 const Test: React.FC = () => {
   const { data } = usePostQuery({ variables: { id: 5 } });

@@ -32,7 +32,7 @@ const Login: React.FC = ({}) => {
         const [response, error] = await tryCatchHell(
           login({
             variables: values,
-            update: (cache) => cache.evict({ fieldName: "me" }),
+            update: (cache) => {cache.evict({ fieldName: "me" }); cache.gc();},
           })
         );
         const data = response.data?.login;

@@ -33,7 +33,7 @@ export const ProfileWidget = ({editProfile, userId}) => {
               src: `${result.info.secure_url}`,
               alt: "photo uploaded",
             });
-            editProfile({variables:{url:result.info.secure_url, id:userId}, update:(cache) => cache.evict({ id: `User:${userId}`, fieldName: 'icon' })});
+            editProfile({variables:{url:result.info.secure_url, id:userId}, update:(cache) => {cache.evict({ id: `User:${userId}`, fieldName: 'icon' }); cache.gc();}});
           } else if (result.event === "batch-cancelled")
             console.log("failed, info:", info);
         }

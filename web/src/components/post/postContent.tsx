@@ -20,6 +20,7 @@ interface PostContentProps {
 }
 
 export const PostContent: React.FC<PostContentProps> = ({ post }) => {
+
   return (
     <Flex direction="column">
       <Image

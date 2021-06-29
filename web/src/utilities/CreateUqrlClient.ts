@@ -152,7 +152,7 @@ export const createUrqClient = (ssrExchange: any, ctx:any) => {
             });
           },
           vote: (_result, args, cache, info) => {
-            const { postId, value } = args as VoteMutationVariables;
+            const { postId } = args as VoteMutationVariables;
             const data = cache.readFragment(
               gql`
                 fragment __ on Post {
@@ -165,7 +165,7 @@ export const createUrqClient = (ssrExchange: any, ctx:any) => {
             );
 
             if (data) {
-              if (data.voteStatus === value) {
+              if (data.voteStatus === 1) {
                 return;
               }
             }

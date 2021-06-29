@@ -8,7 +8,7 @@ import { errorMaps } from "../utilities/errorMap";
 import {useRouter} from "next/router"
 import { withUrqlClient } from "next-urql";
 import { createUrqClient } from "../utilities/CreateUqrlClient";
-import { withApollo } from "../utilities/withApollo";
+import withApollo from "../utilities/withApollo";
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {

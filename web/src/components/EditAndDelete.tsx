@@ -35,6 +35,7 @@ export const EditDelete: React.FC<EditDeleteProps> = ({ creator, post }) => {
               variables: { id: post.id },
               update: (cache) => {
                 cache.evict({ id: "Post:" + post.id });
+                cache.gc();
               },
             })
           }

@@ -35,7 +35,6 @@ export const PostFullPage: React.FC<PostFullPageProps> = ({ post }) => {
             <Flex className="commentSession" direction="column" height="372px">
               {post.comments
                 ? post.comments.map((comment) => {
-                    console.log("commentid:", comment.id);
                     return <AllComments key={comment.id} comment={comment} />;
                   })
                 : null}

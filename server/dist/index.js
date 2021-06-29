@@ -12,54 +12,52 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
-const typeorm_1 = require("typeorm");
-const constant_1 = require("./constant");
-const Posts_1 = require("./entities/Posts");
-require("dotenv").config();
-const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
-const type_graphql_1 = require("type-graphql");
-const hello_1 = require("./resolvers/hello");
-const post_1 = require("./resolvers/post");
-const User_1 = require("./entities/User");
-const user_1 = require("./resolvers/user");
-const path_1 = __importDefault(require("path"));
-const ioredis_1 = __importDefault(require("ioredis"));
-const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const cors_1 = __importDefault(require("cors"));
-const Updoot_1 = require("./entities/Updoot");
-const createUserLoader_1 = require("./utilities/createUserLoader");
-const createUpdootLoader_1 = require("./utilities/createUpdootLoader");
+require("dotenv-safe/config");
+const express_1 = __importDefault(require("express"));
+const express_session_1 = __importDefault(require("express-session"));
+const ioredis_1 = __importDefault(require("ioredis"));
+const path_1 = __importDefault(require("path"));
+require("reflect-metadata");
+const type_graphql_1 = require("type-graphql");
+const typeorm_1 = require("typeorm");
+const constant_1 = require("./constant");
 const Comments_1 = require("./entities/Comments");
+const Posts_1 = require("./entities/Posts");
+const Updoot_1 = require("./entities/Updoot");
+const User_1 = require("./entities/User");
 const comments_1 = require("./resolvers/comments");
+const hello_1 = require("./resolvers/hello");
+const post_1 = require("./resolvers/post");
+const user_1 = require("./resolvers/user");
+const createUpdootLoader_1 = require("./utilities/createUpdootLoader");
+const createUserLoader_1 = require("./utilities/createUserLoader");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const connection = yield typeorm_1.createConnection({
         type: "postgres",
-        database: "postgres",
-        logging: true,
-        password: "mysql",
-        host: "localhost",
-        port: 5432,
-        username: "postgres",
-        migrations: [path_1.default.join(__dirname, "./migrations/*")],
+        url: process.env.DATABASE_URL,
+        logging: false,
+        migrations: [path_1.default.join(__dirname, "./migrations/*.ts")],
         entities: [Posts_1.Post, User_1.User, Updoot_1.Updoot, Comments_1.Comments],
+        ssl: constant_1.__prod__ ? {
+            rejectUnauthorized: false,
+        } : false,
     });
     const app = express_1.default();
+    const RedisStore = connect_redis_1.default(express_session_1.default);
+    const redis = new ioredis_1.default(process.env.REDIS_URL);
+    app.set("trust proxy", 1);
     app.use(cors_1.default({
-        origin: "http://localhost:3000",
+        origin: process.env.CORS_ORIGIN,
         credentials: true,
     }));
-    const RedisStore = connect_redis_1.default(express_session_1.default);
-    const redis = new ioredis_1.default();
     app.use(express_session_1.default({
         name: constant_1.COOKIE_NAME,
         store: new RedisStore({
             client: redis,
             disableTouch: true,
-            host: "localhost",
-            port: 6379,
         }),
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
@@ -68,7 +66,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             secure: constant_1.__prod__,
         },
         saveUninitialized: false,
-        secret: "keyboard cat",
+        secret: process.env.SESSION_SECRET,
         resave: false,
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
@@ -76,6 +74,8 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.helloResolver, post_1.postResolver, user_1.userResolver, comments_1.commentsResolver],
             validate: false,
         }),
+        playground: true,
+        introspection: true,
         context: ({ req, res }) => ({
             em: connection.manager,
             req,
@@ -89,9 +89,12 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     app.get("/", (_, res) => {
         res.send("hi");
     });
-    app.listen(4000, () => {
+    const port = parseInt(process.env.PORT) || 4000;
+    app.listen(port, () => {
         console.log("server running on port 4000");
     });
 });
-main();
+main().catch((err) => {
+    console.error("err:", err);
+});
 //# sourceMappingURL=index.js.map
