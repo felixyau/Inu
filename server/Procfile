@@ -1,3 +1,2 @@
 web: node dist/index.js
-release: echo "release cmd"
 release: export TYPEORM_URL=$DATABASE_URL && npx typeorm migration:run
