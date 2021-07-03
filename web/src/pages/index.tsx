@@ -19,7 +19,7 @@ import { PostAction } from "../components/post/PostAction";
 import { PostContent } from "../components/post/postContent";
 import { UpdootSession } from "../components/UpdootSession";
 import { PostQuery, useMeQuery, usePostsQuery, useUserProfileQuery } from "../generated/graphql";
-import withApollo from "../utilities/withApollo";
+import withApollo from "../utilities/withApollo"; //withApollo alias with function in next-apollo
 import { HiOutlineAnnotation } from "react-icons/hi";
 import { useRouter } from "next/router";
 import { UserAndChangeAcc } from "../components/userAndChangeAcc";
@@ -28,8 +28,9 @@ import { Header } from "../components/post/Header";
 import { UserInteraction } from "../components/post/UserInteraction";
 import { Layout } from "../components/Layout";
 import { CloudWidget } from "../components/CloudWidget";
-import { Login } from "../components/Login";
+import { Login } from "./login";
 import { IndexModal } from "../components/IndexModal";
+import login from "./login";
 
 // const userContext = React.createContext(userData.userProfile);
 const Index = () => {
@@ -63,7 +64,8 @@ const Index = () => {
     );
   }
   return (
-    !meData?.me ? <Login/> : (
+    !meData?.me ? <Login/> :
+    (
     <Layout>
       {/* <Modal
         isOpen={!!router.query.id}

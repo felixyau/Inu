@@ -39,6 +39,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         type: "postgres",
         url: process.env.DATABASE_URL,
         logging: false,
+        synchronize: constant_1.__prod__ ? false : true,
         migrations: [path_1.default.join(__dirname, "./migrations/*.ts")],
         entities: [Posts_1.Post, User_1.User, Updoot_1.Updoot, Comments_1.Comments],
         ssl: constant_1.__prod__ ? {

@@ -1,11 +1,12 @@
 /*
 1. email authentication, now user can register with invalid email, but we can't send email to email with invalid format
-2. each post only shows 50 letters
+solved. each post only shows 50 letters
 3. post limit=1 don't work ,posts mutation bug 
 4. study sql espectially post mutation
 5. how exactly cookie work, maintain login even when delete cookies
 5. I can see password from network request now, is it the case in production only?
 6. How server side rendering work, how next do it, how is server work? urql request 
+7.figure out how to run migration in production properly, now I am using synchronize true for init
 */
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
@@ -42,7 +43,7 @@ const main = async () => {
     type: "postgres",
     url:process.env.DATABASE_URL,
     logging: false,
-    //synchronize: __prod__ ? false : true,
+    synchronize: __prod__ ? false : true,
     migrations: [path.join(__dirname, "./migrations/*.ts")], //dist/migrations/*.js
     entities: [Post, User, Updoot, Comments],
     ssl: __prod__ ? {

@@ -6,8 +6,9 @@ import { v4 as uuidv4 } from "uuid";
 import { Box } from "@chakra-ui/react";
 import { Cloudinary } from "cloudinary-core";
 
-export const CloudWidget = ({ setValues, values }) => {
+export const ProfileWidget = ({editProfile, userId}) => {
   const [photoPreview, setPhotoPreview] = useState({ src: "", alt: "" });
+
   // const cl = new Cloudinary({ cloud_name: "dkvxmdths" });
   // cl.responsive();
 
@@ -32,9 +33,9 @@ export const CloudWidget = ({ setValues, values }) => {
               src: `${result.info.secure_url}`,
               alt: "photo uploaded",
             });
-            setValues({ ...values, photo: `${result.info.secure_url}` });
+            editProfile({variables:{url:result.info.secure_url, id:userId}, update:(cache) => {cache.evict({ id: `User:${userId}`, fieldName: 'icon' }); cache.gc();}});
           } else if (result.event === "batch-cancelled")
-            console.log("failed, info:", info);
+            console.log("failed, info:", result.info);
         }
       )
       .open();

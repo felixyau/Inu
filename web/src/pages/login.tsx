@@ -21,7 +21,7 @@ import NextLink from "next/link";
 import withApollo from "../utilities/withApollo";
 import { tryCatchHell } from "../utilities/tryCatchHell";
 
-const Login: React.FC = ({}) => {
+export const Login: React.FC = ({}) => {
   const [login] = useLoginMutation();
   const router = useRouter();
 
@@ -35,6 +35,8 @@ const Login: React.FC = ({}) => {
             update: (cache) => {cache.evict({ fieldName: "me" }); cache.gc();},
           })
         );
+        console.log("reponse:", response);
+        console.log("err:", error)
         const data = response.data?.login;
         if (error) alert("server not responding");
         if (data.errors) {
@@ -67,7 +69,7 @@ const Login: React.FC = ({}) => {
                   type="usernameOrEmail"
                 />
               </Box>
-              <Box m="4px auto" width="75%">
+              <Box m="4px auto" width="80%">
                 <InputField
                   name="password"
                   placeholder="password"
@@ -75,7 +77,7 @@ const Login: React.FC = ({}) => {
                   type="password"
                 />
               </Box>
-              <Box width="75%" m="24px auto 0">
+              <Box width="80%" m="24px auto 0">
               <Button
                 type="submit"
                 isLoading={isSubmitting}

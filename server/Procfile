@@ -1,2 +1,0 @@
-web: node dist/index.js
-release: export TYPEORM_URL=$DATABASE_URL && npx typeorm migration:run

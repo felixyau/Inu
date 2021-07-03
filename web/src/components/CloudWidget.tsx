@@ -1,3 +1,5 @@
+//now for every upload I just save the picture to the server, even the user abort the register
+
 import { WidgetLoader, Widget } from "react-cloudinary-upload-widget";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -6,9 +8,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Box } from "@chakra-ui/react";
 import { Cloudinary } from "cloudinary-core";
 
-export const ProfileWidget = ({editProfile, userId}) => {
+export const CloudWidget = ({ setValues, values }) => {
   const [photoPreview, setPhotoPreview] = useState({ src: "", alt: "" });
-
   // const cl = new Cloudinary({ cloud_name: "dkvxmdths" });
   // cl.responsive();
 
@@ -33,9 +34,9 @@ export const ProfileWidget = ({editProfile, userId}) => {
               src: `${result.info.secure_url}`,
               alt: "photo uploaded",
             });
-            editProfile({variables:{url:result.info.secure_url, id:userId}, update:(cache) => {cache.evict({ id: `User:${userId}`, fieldName: 'icon' }); cache.gc();}});
+            setValues({ ...values, photo: `${result.info.secure_url}` });
           } else if (result.event === "batch-cancelled")
-            console.log("failed, info:", info);
+            console.log("failed, info:", result.info);
         }
       )
       .open();
