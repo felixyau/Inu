@@ -12,7 +12,7 @@ body {
 }
 
 .links {
-  color: "#0088cc";
+  color: #0088cc;
 }
 
 .container {
@@ -23,7 +23,7 @@ body {
 }
 
 .navbar-icons > * {
-  padding-left: 24px;
+  padding-left: 10px;
 }
 
 .commentInput {

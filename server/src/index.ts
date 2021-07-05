@@ -41,14 +41,16 @@ const main = async () => {
   //sendEmails("bob@b.com","hi");
   const connection = await createConnection({
     type: "postgres",
-    url:process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL,
     logging: false,
     synchronize: __prod__ ? false : true,
     migrations: [path.join(__dirname, "./migrations/*.ts")], //dist/migrations/*.js
     entities: [Post, User, Updoot, Comments],
-    ssl: __prod__ ? {
-      rejectUnauthorized:false,
-    } : false,
+    ssl: __prod__
+      ? {
+          rejectUnauthorized: false,
+        }
+      : false,
   });
 
   //await connection.runMigrations();
@@ -59,7 +61,7 @@ const main = async () => {
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
 
-  app.set("trust proxy",1); //what does this do
+  app.set("trust proxy", 1); //what does this do
 
   app.use(
     cors({
@@ -80,9 +82,9 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10years
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: "none", //set to none to allow third party cookies, less secure but I don't have money to buy domain name ,if you forgot the details https://web.dev/samesite-cookies-explained/
         secure: __prod__, //cookies only work in https
-        //domain: __prod__? ".heroku.com" : undefined,
+        domain: __prod__ ? ".pure-depths-09210.herokuapp.com" : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
@@ -95,8 +97,8 @@ const main = async () => {
       resolvers: [helloResolver, postResolver, userResolver, commentsResolver],
       validate: false,
     }),
-    playground:true,
-    introspection:true,
+    // playground:true,
+    // introspection:true,
     context: ({ req, res }) => ({
       em: connection.manager,
       req,
@@ -121,5 +123,5 @@ const main = async () => {
 };
 
 main().catch((err) => {
-  console.error("err:",err);
+  console.error("err:", err);
 });

@@ -25,16 +25,16 @@ const updateAfterAddComment = (
     fragment: gql`
       fragment _ on Post {
         id
-        comments
-        # comments {
-        #   id
-        #   text
-        #   commentor {
-        #     id
-        #     username
-        #     icon
-        #   }
-        # }
+        # comments
+        comments {
+          id
+          text
+          commentor {
+            id
+            username
+            icon
+          }
+        }
       }
     `,
   });

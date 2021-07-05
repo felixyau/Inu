@@ -35,15 +35,15 @@ export const Login: React.FC = ({}) => {
             update: (cache) => {cache.evict({ fieldName: "me" }); cache.gc();},
           })
         );
-        console.log("reponse:", response);
-        console.log("err:", error)
         const data = response.data?.login;
         if (error) alert("server not responding");
         if (data.errors) {
           setErrors(errorMaps(data.errors));
         } else if (response.data?.login.user) {
-          if (typeof router.query.next === "string")
+          if (typeof router.query.next === "string") {
+            console.log("router next replace");
             router.replace(router.query.next);
+          }
           else {
             router.replace("/");
           }
@@ -108,7 +108,7 @@ export const Login: React.FC = ({}) => {
           <Box className="card" width="100%" mt="10px" p="10px 0">
             <Flex justify="center" p="15px">
             <NextLink href="/register">
-              <Link>No accout? <span className="links">sign up</span></Link>
+              <Link>Don't have an account? <span className="links">Sign up</span></Link>
             </NextLink>
             </Flex>
           </Box>

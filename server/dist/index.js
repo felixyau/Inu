@@ -42,9 +42,11 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         synchronize: constant_1.__prod__ ? false : true,
         migrations: [path_1.default.join(__dirname, "./migrations/*.ts")],
         entities: [Posts_1.Post, User_1.User, Updoot_1.Updoot, Comments_1.Comments],
-        ssl: constant_1.__prod__ ? {
-            rejectUnauthorized: false,
-        } : false,
+        ssl: constant_1.__prod__
+            ? {
+                rejectUnauthorized: false,
+            }
+            : false,
     });
     const app = express_1.default();
     const RedisStore = connect_redis_1.default(express_session_1.default);
@@ -63,8 +65,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
             httpOnly: true,
-            sameSite: "lax",
+            sameSite: "none",
             secure: constant_1.__prod__,
+            domain: constant_1.__prod__ ? ".pure-depths-09210.herokuapp.com" : undefined,
         },
         saveUninitialized: false,
         secret: process.env.SESSION_SECRET,
@@ -75,8 +78,6 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.helloResolver, post_1.postResolver, user_1.userResolver, comments_1.commentsResolver],
             validate: false,
         }),
-        playground: true,
-        introspection: true,
         context: ({ req, res }) => ({
             em: connection.manager,
             req,

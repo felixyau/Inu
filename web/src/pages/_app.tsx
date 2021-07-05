@@ -6,12 +6,14 @@ import { PaginatedPost, PostQuery } from "../generated/graphql";
 import "../style.css";
 import { Head } from "next/document";
 import { UserWrapper } from "../components/UserWrapper";
-import { client } from "../utilities/withApollo";
+import withApollo, { client } from "../utilities/withApollo";
+import { NextPageContext } from "next";
 
-function MyApp({ Component, pageProps }: any) {
+function MyApp({ Component, pageProps, cookie }: any) {
+  const Client = client(cookie);
   return (
     <ChakraProvider resetCSS theme={theme}>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={Client}>
         <UserWrapper>
           <Component {...pageProps} />
         </UserWrapper>

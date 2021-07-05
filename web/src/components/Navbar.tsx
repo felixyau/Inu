@@ -17,9 +17,10 @@ import { isServer } from "../utilities/isServer";
 
 
 import { useApolloClient } from "@apollo/client";
-import { AddIcon, LinkIcon, MoonIcon } from "@chakra-ui/icons";
+import { AddIcon, ArrowBackIcon, LinkIcon, MoonIcon, SmallAddIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import InuIcon from "../Icons/InuIcon";
+import { HomePageIcon } from "../Icons/HomePage";
 
 interface NavbarProps {}
 
@@ -87,13 +88,12 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
               bg="-moz-initial"
               aria-label="create-post"
               icon={<AddIcon />}
-              mr={2}
             ></IconButton>
           </Tooltip>
             </a>
           </NextLink>
         </Box>
-        <Box mr={2} ml={"auto"}>
+        <Box ml={"auto"}>
           HI {data.me.username}
         </Box>
         <NextLink href="/">
@@ -129,10 +129,10 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
 
         <Flex align="center" ml={"auto"} className="navbar-icons">
           <Box>
-            <Tooltip label="change color theme" aria-label="change-color-theme">
+            <Tooltip label="back to homepage" aria-label="back to homepage">
               <IconButton
                 aria-label="colormode"
-                icon={<MoonIcon />}
+                icon={<HomePageIcon />}
                 onClick={toggleColorMode}
                 bg="-moz-initial"
               >

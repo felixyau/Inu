@@ -63,17 +63,12 @@ const Index = () => {
       </div>
     );
   }
+  console.log("meData:", meData?.me);
+  console.log("meError:", meError);
   return (
     !meData?.me ? <Login/> :
     (
     <Layout>
-      {/* <Modal
-        isOpen={!!router.query.id}
-        onRequestClose={() => router.back()}
-        className=""
-      >
-        <Flex>Hi</Flex>
-      </Modal> */}
       <Flex>
         <Flex className="container">
           <Flex className="postSession">

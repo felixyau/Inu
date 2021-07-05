@@ -21,11 +21,14 @@ const Register: React.FC<registerProps> = ({}) => {
       <Formik
         initialValues={{ username: "", password: "", email: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await register({ variables: { options: values } }); //expose password
+          const response = await register({
+            variables: { options: values },
+            update: (cache) => cache.evict({ fieldName: "me" }),
+          }); //expose password
           if (response.data?.register.errors) {
             setErrors(errorMaps(response.data.register.errors));
           } else if (response.data?.register.user) {
-            router.replace("./");
+            router.replace("/register/icon");
           }
         }}
       >
@@ -93,7 +96,8 @@ const Register: React.FC<registerProps> = ({}) => {
               <Flex justify="center" p="15px">
                 <NextLink href="/login">
                   <Link>
-                    Already have an account? <span className="links">Log in</span>
+                    Already have an account?{" "}
+                    <span className="links">Log in</span>
                   </Link>
                 </NextLink>
               </Flex>
