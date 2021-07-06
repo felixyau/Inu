@@ -1,3 +1,18 @@
 # Inu
 
-A fullstack social media clone
+A fullstack instagram clone.
+
+Installation
+
+After you cloned the project, 
+Run the server
+  -cd server
+  -npm dev/ yarn dev
+  
+Run the website
+  - cd web
+  - npm dev/ yarn dev
+
+To reload the server without restarting during development, and compile the typescript files to javascript run
+  -yarn watch
+
