@@ -45,7 +45,8 @@ const Index = () => {
       notifyOnNetworkStatusChange: true,
       // skip: typeof window === "undefined", ??
     });
-  
+  if(meLoading || loading) return(<div>loading...</div>);
+
   if (!loading && !data) {
     return (
       <div>
@@ -55,6 +56,8 @@ const Index = () => {
     );
   }
 
+  
+
   if (!meLoading && !meData) {
     return (
       <div>
@@ -63,8 +66,6 @@ const Index = () => {
       </div>
     );
   }
-  console.log("meData:", meData?.me);
-  console.log("meError:", meError);
   return (
     !meData?.me ? <Login/> :
     (
@@ -84,7 +85,7 @@ const Index = () => {
                         direction="column"
                       >
                         <Box padding="0 16px">
-                          <Header post={post} />
+                          <Header post={post}/>
                         </Box>
                         <PostContent post={post} />
                         <Flex direction="column" p="0 16px">

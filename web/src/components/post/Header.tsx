@@ -12,6 +12,10 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ post }) => {
   const creator = post.creator;
+  console.log("Creator name:", creator.username);
+  console.log("Creator id:", creator.id);
+  console.log("content:", post.text);
+
   return (
     <Flex width="100%" padding="16px 0" zIndex={1}>
       <Flex mr="12px" align="center">
@@ -28,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({ post }) => {
       </Flex>
       <EditDelete post={post} creator={post.creator}/>
       <Flex align="center" ml="auto">
-        <NextLink href="/user/[id]" as={`/user/${creator.icon}`}>
+        <NextLink href="/user/[id]" as={`/user/${creator.id}`}>
           <Link fontSize=".5rem">Follow</Link>
         </NextLink>
       </Flex>

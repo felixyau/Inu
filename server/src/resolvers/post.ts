@@ -293,6 +293,7 @@ export class postResolver {
         ],
       };
     }
+    console.log("req user:", req.session.userId);
     const post = await Post.create({
       ...input,
       creatorId: req.session.userId,

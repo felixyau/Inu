@@ -32,7 +32,9 @@ const Register: React.FC<registerProps> = ({}) => {
           }
         }}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting,values }) => {
+          const disable = isSubmitting || !values.username.trim() || !values.password.trim() || !values.email.trim();
+          return (
           <Flex
             direction="column"
             align="center"
@@ -67,6 +69,7 @@ const Register: React.FC<registerProps> = ({}) => {
                     colorScheme="telegram"
                     width="100%"
                     maxHeight="30px"
+                    disabled={disable}
                   >
                     Register
                   </Button>
@@ -94,16 +97,17 @@ const Register: React.FC<registerProps> = ({}) => {
             </Box>
             <Box className="card" width="100%" mt="10px" p="10px 0">
               <Flex justify="center" p="15px">
+                Already have an account?
                 <NextLink href="/login">
                   <Link>
-                    Already have an account?{" "}
+                    &nbsp;
                     <span className="links">Log in</span>
                   </Link>
                 </NextLink>
               </Flex>
             </Box>
           </Flex>
-        )}
+        )}}
       </Formik>
     </Wrapper>
   );

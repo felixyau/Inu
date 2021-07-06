@@ -32,7 +32,10 @@ export const Login: React.FC = ({}) => {
         const [response, error] = await tryCatchHell(
           login({
             variables: values,
-            update: (cache) => {cache.evict({ fieldName: "me" }); cache.gc();},
+            update: (cache) => {
+              cache.evict({ fieldName: "me" });
+              cache.gc();
+            },
           })
         );
         const data = response.data?.login;
@@ -43,77 +46,88 @@ export const Login: React.FC = ({}) => {
           if (typeof router.query.next === "string") {
             console.log("router next replace");
             router.replace(router.query.next);
-          }
-          else {
+          } else {
             router.replace("/");
           }
         }
         setSubmitting(false);
       }}
     >
-      {({ isSubmitting, handleSubmit, isValidating }) => (
-        <Flex
-          direction="column"
-          align="center"
-          maxWidth="400px"
-          p="16px"
-          m="10px auto 0"
-        >
-          <Box className="card" width="100%" p="16px">
-            <Form>
-              <Box m="4px auto" width="80%">
-                <InputField
-                  name="usernameOrEmail"
-                  placeholder="Username or Email"
-                  label="Username or Email"
-                  type="usernameOrEmail"
-                />
-              </Box>
-              <Box m="4px auto" width="80%">
-                <InputField
-                  name="password"
-                  placeholder="password"
-                  label="Password"
-                  type="password"
-                />
-              </Box>
-              <Box width="80%" m="24px auto 0">
-              <Button
-                type="submit"
-                isLoading={isSubmitting}
-                colorScheme="telegram"
-                width="100%"
-                maxHeight="30px" 
-              >
-                
-                Login
-              </Button>
-              </Box>
-              <Flex>
-                <Box
-                  borderTop="1px solid rgba(238,238,238,1)"
-                  m="16px auto 0"
-                  width="75%"
-                  p="24px"
-                >
-                  <Flex justify="center">
-                    <NextLink href="/forgot-password">
-                      <Link>forgot password?</Link>
-                    </NextLink>
-                  </Flex>
+      {({ isSubmitting, handleSubmit, isValidating, values }) => {
+        const disable = isSubmitting || !values.usernameOrEmail.trim() || !values.password.trim();
+        return (
+          <Flex
+            direction="column"
+            align="center"
+            maxWidth="400px"
+            p="16px"
+            m="10px auto 0"
+          >
+            <Box className="card" width="100%" p="16px 50px">
+              <Form>
+                <Box m="4px auto">
+                  <InputField
+                    name="usernameOrEmail"
+                    placeholder="Username or Email"
+                    label="Username or Email"
+                    type="usernameOrEmail"
+                  />
                 </Box>
+                <Box m="4px auto">
+                  <InputField
+                    name="password"
+                    placeholder="password"
+                    label="Password"
+                    type="password"
+                  />
+                </Box>
+                <Flex display={{ lg: "none" }} justify="flex-end">
+                  <Box width="auto">
+                    <NextLink href="/forgot-password">
+                      <a className="links">forgot password?</a>
+                    </NextLink>
+                  </Box>
+                </Flex>
+                <Box p="24px 0 16px" borderBottom="1px solid rgba(238,238,238,1)">
+                  <Button
+                    type="submit"
+                    isLoading={isSubmitting}
+                    colorScheme="telegram"
+                    disabled={disable}
+                    width="100%"
+                    maxHeight="30px"
+                  >
+                    Login
+                  </Button>
+                </Box>
+                <Flex display={{ base: "none", lg: "flex" }}>
+                  <Box
+                    m="0 auto"
+                    p="24px"
+                    width="100%"
+                  >
+                    <Flex justify="center">
+                      <NextLink href="/forgot-password">
+                        <a className="links">forgot password?</a>
+                      </NextLink>
+                    </Flex>
+                  </Box>
+                </Flex>
+              </Form>
+            </Box>
+            <Box className="card" width="100%" mt="10px" p="10px 0">
+              <Flex justify="center" p="15px">
+                Don't have an account?
+                <NextLink href="/register">
+                  <Link>
+                    <span className="links">&nbsp;Sign up</span>
+                  </Link>
+                </NextLink>
               </Flex>
-            </Form>
-          </Box>
-          <Box className="card" width="100%" mt="10px" p="10px 0">
-            <Flex justify="center" p="15px">
-            <NextLink href="/register">
-              <Link>Don't have an account? <span className="links">Sign up</span></Link>
-            </NextLink>
-            </Flex>
-          </Box>
-        </Flex>
-      )}
+            </Box>
+          </Flex>
+        );
+      }}
     </Formik>
   );
 };

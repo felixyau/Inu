@@ -65,7 +65,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
             httpOnly: true,
-            sameSite: "none",
+            sameSite: constant_1.__prod__ ? "none" : "lax",
             secure: constant_1.__prod__,
             domain: constant_1.__prod__ ? ".pure-depths-09210.herokuapp.com" : undefined,
         },
@@ -78,6 +78,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.helloResolver, post_1.postResolver, user_1.userResolver, comments_1.commentsResolver],
             validate: false,
         }),
+        introspection: true,
         context: ({ req, res }) => ({
             em: connection.manager,
             req,

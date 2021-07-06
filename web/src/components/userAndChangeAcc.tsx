@@ -23,7 +23,9 @@ export const UserAndChangeAcc: React.FC<UserAndChangeAccProps> = ({user}) => {
       </Box>
       <NameAndDescription user={user}/>
       <Flex align="center">
-        <Link fontSize=".5rem">Change</Link>
+        <NextLink href="user/[id]" as={`user/${user.id}`}>
+        <Link fontSize=".5rem">Profile</Link>
+        </NextLink>
       </Flex>
     </Flex>
   );

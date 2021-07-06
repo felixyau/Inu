@@ -7,6 +7,7 @@ solved. each post only shows 50 letters
 5. I can see password from network request now, is it the case in production only?
 6. How server side rendering work, how next do it, how is server work? urql request 
 7.figure out how to run migration in production properly, now I am using synchronize true for init
+8. user loader can't understand, y in that order
 */
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
@@ -82,7 +83,7 @@ const main = async () => {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, //10years
         httpOnly: true,
-        sameSite: "none", //set to none to allow third party cookies, less secure but I don't have money to buy domain name ,if you forgot the details https://web.dev/samesite-cookies-explained/
+        sameSite: __prod__ ? "none" : "lax", //set to none to allow third party cookies, less secure but I don't have money to buy domain name ,if you forgot the details https://web.dev/samesite-cookies-explained/
         secure: __prod__, //cookies only work in https
         domain: __prod__ ? ".pure-depths-09210.herokuapp.com" : undefined,
       },
@@ -98,7 +99,7 @@ const main = async () => {
       validate: false,
     }),
     // playground:true,
-    // introspection:true,
+    introspection:true,
     context: ({ req, res }) => ({
       em: connection.manager,
       req,

@@ -18,7 +18,13 @@ const User_1 = require("../entities/User");
 const CreateUserLoader = () => {
     return new dataloader_1.default((userIds) => __awaiter(void 0, void 0, void 0, function* () {
         const users = yield User_1.User.findByIds(userIds);
-        return users;
+        console.log("usersbefore:", users);
+        const userIdToUser = {};
+        users.forEach(u => {
+            userIdToUser[u.id] = u;
+        });
+        console.log(userIdToUser);
+        return userIds.map(id => userIdToUser[id]);
     }));
 };
 exports.CreateUserLoader = CreateUserLoader;

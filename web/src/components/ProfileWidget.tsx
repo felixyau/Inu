@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { Image, Transformation, CloudinaryContext } from "cloudinary-react";
 import { v4 as uuidv4 } from "uuid";
-import { Box } from "@chakra-ui/react";
+import { Box,Text } from "@chakra-ui/react";
 import { Cloudinary } from "cloudinary-core";
 
 export const ProfileWidget = ({editProfile, userId}) => {
@@ -42,17 +42,8 @@ export const ProfileWidget = ({editProfile, userId}) => {
   };
 
   return (
-    <Box>
-      <button onClick={() => createUploadWidget()}>upload image</button>
-      <Box width="100px" height="120px">
-        <img alt={photoPreview.alt} src={photoPreview.src}></img>
-        {/*<Image
-          cloudName="dkvxmdths"
-          publicId="widgetUpload/psgk79fxqnmqfyni7cdv"
-        />
-        <img style={{maxHeight:"100%", objectFit:"cover"}} className="cld-responsive" data-src="https://res.cloudinary.com/dkvxmdths/image/upload/w_auto,c_scale/v1623403671/widgetUpload/psgk79fxqnmqfyni7cdv.jpg"></img>
-        */}
-      </Box>
-    </Box>
+    <Text textAlign="center" p="8px 0">
+      <button onClick={() => createUploadWidget()}>Change profile Picture</button>
+    </Text>
   );
 };

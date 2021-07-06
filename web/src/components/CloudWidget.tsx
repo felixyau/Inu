@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { Image, Transformation, CloudinaryContext } from "cloudinary-react";
 import { v4 as uuidv4 } from "uuid";
-import { Box } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { Cloudinary } from "cloudinary-core";
 
 export const CloudWidget = ({ setValues, values }) => {
-  const [photoPreview, setPhotoPreview] = useState({ src: "", alt: "" });
+  const [photoPreview, setPhotoPreview] = useState({
+    src: "https://i.stack.imgur.com/y9DpT.jpg",
+    alt: "",
+  });
   // const cl = new Cloudinary({ cloud_name: "dkvxmdths" });
   // cl.responsive();
 
@@ -44,9 +47,14 @@ export const CloudWidget = ({ setValues, values }) => {
 
   return (
     <Box>
-      <button onClick={() => createUploadWidget()}>upload image</button>
-      <Box width="100px" height="120px">
-        <img alt={photoPreview.alt} src={photoPreview.src}></img>
+      <Box width="100%" minHeight="120px" border="1px" mt="24px">
+        <Image
+          width="100%"
+          objectfit="cover"
+          alt={photoPreview.alt}
+          src={photoPreview.src}
+        ></Image>
+
         {/*<Image
           cloudName="dkvxmdths"
           publicId="widgetUpload/psgk79fxqnmqfyni7cdv"
@@ -54,6 +62,16 @@ export const CloudWidget = ({ setValues, values }) => {
         <img style={{maxHeight:"100%", objectFit:"cover"}} className="cld-responsive" data-src="https://res.cloudinary.com/dkvxmdths/image/upload/w_auto,c_scale/v1623403671/widgetUpload/psgk79fxqnmqfyni7cdv.jpg"></img>
         */}
       </Box>
+      <Flex mt="10px" justify="center">
+        <Button
+          p="5px 2px"
+          size="auto"
+          colorScheme="blackAlpha"
+          onClick={() => createUploadWidget()}
+        >
+          upload an image
+        </Button>
+      </Flex>
     </Box>
   );
 };

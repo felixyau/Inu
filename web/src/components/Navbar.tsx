@@ -15,9 +15,14 @@ import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isTargetLikeServerless } from "next/dist/next-server/server/config";
 import { isServer } from "../utilities/isServer";
 
-
 import { useApolloClient } from "@apollo/client";
-import { AddIcon, ArrowBackIcon, LinkIcon, MoonIcon, SmallAddIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  ArrowBackIcon,
+  LinkIcon,
+  MoonIcon,
+  SmallAddIcon,
+} from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import InuIcon from "../Icons/InuIcon";
 import { HomePageIcon } from "../Icons/HomePage";
@@ -43,31 +48,31 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         <Box>
           <NextLink href="/create-post">
             <a>
-          <Tooltip label="create post" aria-label="create-post">
-            <IconButton
-              padding={0}
-              margin={0}
-              bg="-moz-initial"
-              aria-label="create-post"
-              icon={<AddIcon />}
-            ></IconButton>
-          </Tooltip>
-          </a>
+              <Tooltip label="create post" aria-label="create-post">
+                <IconButton
+                  padding={0}
+                  margin={0}
+                  bg="-moz-initial"
+                  aria-label="create-post"
+                  icon={<AddIcon />}
+                ></IconButton>
+              </Tooltip>
+            </a>
           </NextLink>
         </Box>
         <Box>
           <NextLink href="/register">
             <a>
-          <Tooltip label="register" aria-label="register">
-            <IconButton
-              padding={0}
-              margin={0}
-              bg="-moz-initial"
-              aria-label="create-post"
-              icon={<LinkIcon />}
-            ></IconButton>
-          </Tooltip>
-          </a>
+              <Tooltip label="register" aria-label="register">
+                <IconButton
+                  padding={0}
+                  margin={0}
+                  bg="-moz-initial"
+                  aria-label="create-post"
+                  icon={<LinkIcon />}
+                ></IconButton>
+              </Tooltip>
+            </a>
           </NextLink>
         </Box>
         <Box>
@@ -83,19 +88,17 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         <Box>
           <NextLink href="/create-post">
             <a>
-          <Tooltip label="create post" aria-label="create-post">
-            <IconButton
-              bg="-moz-initial"
-              aria-label="create-post"
-              icon={<AddIcon />}
-            ></IconButton>
-          </Tooltip>
+              <Tooltip label="create post" aria-label="create-post">
+                <IconButton
+                  bg="-moz-initial"
+                  aria-label="create-post"
+                  icon={<AddIcon />}
+                ></IconButton>
+              </Tooltip>
             </a>
           </NextLink>
         </Box>
-        <Box ml={"auto"}>
-          HI {data.me.username}
-        </Box>
+        <Box ml={"auto"}>HI {data.me.username}</Box>
         <NextLink href="/">
           <Link
             onClick={async () => {
@@ -110,35 +113,39 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     );
   }
   return (
-    <Flex align="center" justify="center" bg="hsl(210, 100%, 60%)" height={54} top={0} position="sticky" zIndex={2} width="100%">
-      <Flex    
-        p={4}
-        align="center"
-        margin={0}
-        padding={0}
-        width={935}
-      >
+    <Flex
+      align="center"
+      justify="center"
+      bg="hsl(210, 100%, 60%)"
+      height={54}
+      top={0}
+      position="sticky"
+      zIndex={2}
+      width="100%"
+    >
+      <Flex p={4} align="center" margin={0} padding={0} width={935}>
         <NextLink href="/">
           <a>
-          <Flex _hover={{ cursor: "pointer" }} align="center">
-            <InuIcon />
-            Shiba
-          </Flex>
+            <Flex _hover={{ cursor: "pointer" }} align="center">
+              <InuIcon />
+              Shiba
+            </Flex>
           </a>
         </NextLink>
 
         <Flex align="center" ml={"auto"} className="navbar-icons">
           <Box>
-            <Tooltip label="back to homepage" aria-label="back to homepage">
-              <IconButton
-                aria-label="colormode"
-                icon={<HomePageIcon />}
-                onClick={toggleColorMode}
-                bg="-moz-initial"
-              >
-                {colorMode === "light" ? "Dark" : "Light"}
-              </IconButton>
-            </Tooltip>
+            <NextLink href="/">
+              <a>
+                <Tooltip label="back to homepage" aria-label="back to homepage">
+                  <IconButton
+                    aria-label="homepage"
+                    icon={<HomePageIcon />}
+                    bg="-moz-initial"
+                  ></IconButton>
+                </Tooltip>
+              </a>
+            </NextLink>
           </Box>
           {body}
         </Flex>

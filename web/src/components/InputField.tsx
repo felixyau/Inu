@@ -14,6 +14,7 @@ interface InputFieldProps {
   name:string;
   placeholder?:string;
   type?:string;
+  readOnly?: boolean
 }
 
 export const InputField: React.FC<InputFieldProps> = ({

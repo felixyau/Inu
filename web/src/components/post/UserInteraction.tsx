@@ -1,50 +1,19 @@
 import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  Link,
-  Text,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
+  Box, Flex, Text
 } from "@chakra-ui/react";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
 import React, {
-  ChangeEvent,
-  FormEvent,
-  HtmlHTMLAttributes,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
+  useState
 } from "react";
 import {
-  AddCommentMutation,
-  Comments,
-  Maybe,
-  PostSnippetFragment,
-  useAddCommentMutation,
-  useMeQuery,
+  PostSnippetFragment, useMeQuery
 } from "../../generated/graphql";
-import { Collapse } from "react-collapse";
-import NextLink from "next/link";
-import { PostText } from "./PostText";
-import { Formik, useField } from "formik";
-import { TopComments } from "./TopComments";
-import { ApolloCache, gql } from "@apollo/client";
-import { comments } from "../../utilities/types";
-import { CommentBox } from "./CommentBox";
-
-import { useRouter } from "next/router";
 import { IndexModal } from "../IndexModal";
+import { CommentBox } from "./CommentBox";
+import { PostText } from "./PostText";
+import { TopComments } from "./TopComments";
+
 
 
 interface UserInteractionProps {

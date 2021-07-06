@@ -208,6 +208,7 @@ let postResolver = class postResolver {
                     ],
                 };
             }
+            console.log("req user:", req.session.userId);
             const post = yield Posts_1.Post.create(Object.assign(Object.assign({}, input), { creatorId: req.session.userId })).save();
             return { post };
         });
