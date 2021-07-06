@@ -14,5 +14,5 @@ Run the website
   - npm dev/ yarn dev
 
 To reload the server without restarting during development, and compile the typescript files to javascript run
-  -yarn watch
+  - yarn watch
 
