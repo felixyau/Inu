@@ -18,3 +18,5 @@ Run the website
 
 To reload the server without restarting during development, and compile the typescript files to javascript run
   - yarn watch
+To start a local redis server through WSL
+  - service redis-server restart
