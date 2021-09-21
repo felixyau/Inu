@@ -2,9 +2,7 @@
 
 A fullstack instagram clone. https://redditclone-seven.vercel.app/
 
-
 (Unfortunately it currently does not work on mobile browser)
-
 
 Installation
 
