@@ -1,6 +1,6 @@
 # Inu
 
-A fullstack instagram clone.
+A fullstack instagram clone. https://redditclone-seven.vercel.app/
 
 Installation
 
