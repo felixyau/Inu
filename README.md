@@ -2,6 +2,8 @@
 
 A fullstack instagram clone. https://redditclone-seven.vercel.app/
 
+# The heroku server is forced to sleep from 12am - 6 am. Please refresh the page if facing a 504 gateway error.
+
 (Unfortunately it currently does not work on mobile browser)
 
 Installation
