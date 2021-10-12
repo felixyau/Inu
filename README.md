@@ -1,6 +1,6 @@
 # Inu
 
-The heroku server is forced to sleep from 12am - 6 am. Please refresh the page if you face a 504 gateway error. Unfortunately, it does not work on mobile broswer currently.
+The heroku server is forced to sleep 6 hours a day. Please refresh the page if you face a 504 gateway error. Unfortunately, it does not work on mobile broswer currently.
 
 A fullstack instagram clone. https://redditclone-seven.vercel.app/
 
