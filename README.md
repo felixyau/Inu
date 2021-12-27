@@ -2,7 +2,7 @@
 
 The heroku server is forced to sleep 6 hours a day. Please refresh the page if you face a 504 gateway error. Unfortunately, it does not work on mobile broswer currently.
 
-If you don't want to register, just login with this account:
+If you don't want to register, just login with this account: <br/>
   username: admin
   password: admin
 
