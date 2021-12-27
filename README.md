@@ -2,6 +2,10 @@
 
 The heroku server is forced to sleep 6 hours a day. Please refresh the page if you face a 504 gateway error. Unfortunately, it does not work on mobile broswer currently.
 
+If you don't want to register, just login with this account:
+username: admin
+password: admin
+
 A fullstack instagram clone. https://redditclone-seven.vercel.app/
 
 I did this project to see the big picture of web developement. In the frontend, I used React for creating simple instagram actions like creating post, send comments and thumbs up, Nextjs for routing and Chakra UI to simulate the UI of instagram.  In the backend I have used Nodejs with typeorm to fetch data from Postgresql database. And used typegraphql and graphql to create the api. 
